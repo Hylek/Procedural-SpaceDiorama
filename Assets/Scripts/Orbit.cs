@@ -6,6 +6,7 @@ public class Orbit : MonoBehaviour
 {
     public GameObject target;
     public float orbitSpeed;
+    public Vector3 orbitAngle;
 
     private Transform targetPosition;
 
@@ -18,6 +19,6 @@ public class Orbit : MonoBehaviour
     private void FixedUpdate()
     {
         // Rotate the object around the central object
-        transform.RotateAround(targetPosition.position, Vector3.up, orbitSpeed * Time.deltaTime);
+        transform.RotateAround(targetPosition.position, orbitAngle, orbitSpeed * Time.deltaTime);
     }
 }
