@@ -8,21 +8,24 @@ public class SolarSystemGenerator : MonoBehaviour
     private GameObject star;
     private GameObject[] planets;
     private GameObject[] moons;
+    private GameObject colonyMoon;
     private int moonColony = -1;
+    private LayerMask mask;
 
 	private void Start ()
     {
         GenerateStar();
         GeneratePlanets();
-        GenerateMoons();
+        //GenerateMoons();
 	}
 
 	private void Update ()
     {
 		if(moonColony == -1)
         {
-            moonColony = Random.Range(0, moons.Length);
-            Debug.Log("Moon " + moonColony + " Will have the colony!");
+            //moonColony = Random.Range(0, moons.Length);
+            //Debug.Log("Moon " + moonColony + " Will have the colony!");
+            //colonyMoon = moons[moonColony];
         }
 	}
 
@@ -46,10 +49,9 @@ public class SolarSystemGenerator : MonoBehaviour
             float orbitSpeed = (1 / distance) * 5000;
             planets[i].GetComponent<Orbit>().orbitSpeed = orbitSpeed;
 
-            if (!Physics.CheckSphere(planets[i].transform.position, planets[i].transform.localScale.x * 1.2f))
-            {
-                
-            }
+            Collider[] hits = Physics.OverlapSphere(planets[i].transform.position, planets[i].transform.localScale.x * 1.5f);
+
+            Debug.DrawRay(planets[i].transform.position, Vector3.forward, Color.green);
         }
     }
 
