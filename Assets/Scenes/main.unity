@@ -142,6 +142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   starMaterial: {fileID: 2100000, guid: 7ea8447b115406347951851f6f302b27, type: 2}
   defaultMat: {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
+  planetMat: {fileID: 2100000, guid: d120913a038bd3145bf7ccf00bd2dc47, type: 2}
 --- !u!4 &509124687
 Transform:
   m_ObjectHideFlags: 0
@@ -166,6 +167,7 @@ GameObject:
   - component: {fileID: 1388495782}
   - component: {fileID: 1388495781}
   - component: {fileID: 1388495780}
+  - component: {fileID: 1388495784}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -235,6 +237,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 25, y: 0, z: 0}
+--- !u!114 &1388495784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1388495779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: 6b2ed308961d26543b153a8d1ecdce3a, type: 2}
 --- !u!1 &1805040886
 GameObject:
   m_ObjectHideFlags: 0
