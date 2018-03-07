@@ -97,7 +97,7 @@ public class SolarSystemGenerator : MonoBehaviour
 
     private void GenerateStar()
     {
-        float scaleAmount = Random.Range(1000.0f, 5000.0f);
+        float scaleAmount = Random.Range(2000.0f, 15000.0f);
         float starStrength = Random.Range(0.1f, 10.0f);
 
         starMaterial.color = new Color32((byte)Random.Range(75, 255), (byte)Random.Range(75, 255), (byte)Random.Range(75, 255), 255);
