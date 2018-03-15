@@ -11,6 +11,7 @@ public class ColonySystemGenerator : MonoBehaviour
     public float spawnRadius = 1.0f;
     public int objectCount;
     private int colonySize;
+    public int[] randomValues;
 
 	void Start ()
     {
@@ -60,6 +61,7 @@ public class ColonySystemGenerator : MonoBehaviour
         habPositions = new Vector3[colonySize];
         connectors = new GameObject[colonySize];
         conPositions = new Vector3[colonySize];
+        randomValues = new int[objectCount + 1];
     }
 
     private void CreateColony()
@@ -73,13 +75,14 @@ public class ColonySystemGenerator : MonoBehaviour
 
         for(objectCount = objectCount; objectCount < colonySize; objectCount++)
         {
+            randomValues[objectCount] = Random.Range(1, 4);
             if (IsNumberOdd() && objectCount > 0)
             {
-                CreateConnector();
+                CreateConnector(randomValues[objectCount]);
             }
             else if (!IsNumberOdd() && objectCount > 0)
             {
-                CreateHabitat();
+                CreateHabitat(randomValues[objectCount]);
             }
             //Debug.DrawRay(new Vector3(habitats[objectCount].transform.position.x, habitats[objectCount].transform.position.y - 1, habitats[objectCount].transform.position.z), Vector3.down);
         }
@@ -117,13 +120,13 @@ public class ColonySystemGenerator : MonoBehaviour
         }
     }
 
-    private void CreateHabitat()
+    private void CreateHabitat(int random)
     {
         habitats[objectCount] = CreateEntity("Habitat Module " + objectCount, null, ((GameObject)Resources.Load("Cube")).GetComponent<MeshFilter>().sharedMesh, defaultMat);
         habitats[objectCount].transform.parent = moon.transform;
 
         //habitats[objectCount].transform.position = connectors[objectCount - 1].transform.position;
-        habitats[objectCount].transform.position = new Vector3(connectors[objectCount - 1].transform.position.x, connectors[objectCount - 1].transform.position.y, connectors[objectCount - 1].transform.position.z + 2/*Random.Range(1, 4)*/);
+        habitats[objectCount].transform.position = CorrectPosition(random); //new Vector3(connectors[objectCount - 1].transform.position.x, connectors[objectCount - 1].transform.position.y, connectors[objectCount - 1].transform.position.z/*Random.Range(1, 4)*/);
           
        Vector3 origin = new Vector3(habitats[objectCount].transform.position.x, habitats[objectCount].transform.position.y - 0.01f, habitats[objectCount].transform.position.z);
        RaycastHit hit;
@@ -133,21 +136,20 @@ public class ColonySystemGenerator : MonoBehaviour
             finalPos.y = finalPos.y + 0.1f;
            Quaternion finalRot = Quaternion.LookRotation(hit.normal);
             habitats[objectCount].transform.position = finalPos;
-            habitats[objectCount].transform.rotation = finalRot;
+            habitats[objectCount].transform.rotation = new Quaternion(finalRot.x, 0, finalRot.z, 0);
        }
     }
 
-    private void CreateConnector()
+    private void CreateConnector(int random)
     {
         connectors[objectCount] = CreateEntity("Connector " + objectCount, null, ((GameObject)Resources.Load("Cylinder")).GetComponent<MeshFilter>().sharedMesh, defaultMat);
         connectors[objectCount].transform.parent = moon.transform;
 
         // THIS IS ONLY FOR THE TEST CYLINDER
-        connectors[objectCount].transform.localScale = new Vector3(0.005f, 0.02f, 0.005f);
-        connectors[objectCount].transform.Rotate(new Vector3(90, 0, 0));
-        connectors[objectCount].transform.position = SelectDirection();
-        //connectors[objectCount].transform.localScale = new Vector3(habitats[objectCount - 1].transform.localScale.x, habitats[objectCount - 1].transform.localScale.y, habitats[objectCount - 1].transform.localScale.z);
-
+        connectors[objectCount].transform.localScale = new Vector3(0.005f, 0.01f, 0.005f);
+        connectors[objectCount].transform.Rotate(SelectRotation(random));
+        connectors[objectCount].transform.position = SelectDirection(random); //new Vector3(habitats[objectCount - 1].transform.position.x, habitats[objectCount - 1].transform.position.y, habitats[objectCount - 1].transform.position.z + 2);
+                                                                        //connectors[objectCount].transform.localScale = new Vector3(habitats[objectCount - 1].transform.localScale.x, habitats[objectCount - 1].transform.localScale.y, habitats[objectCount - 1].transform.localScale.z);
         Vector3 origin = new Vector3(connectors[objectCount].transform.position.x, connectors[objectCount].transform.position.y - 0.01f, connectors[objectCount].transform.position.z);
         RaycastHit hit;
         if (Physics.Raycast(origin, Vector3.down, out hit))
@@ -155,18 +157,54 @@ public class ColonySystemGenerator : MonoBehaviour
             Vector3 finalPos = hit.point;
             Quaternion finalRot = Quaternion.LookRotation(hit.normal);
             connectors[objectCount].transform.position = finalPos;
-            connectors[objectCount].transform.rotation = finalRot;
+           // connectors[objectCount].transform.rotation = finalRot;
         }
 
     }
 
-    private Vector3 SelectDirection()
+    private Vector3 CorrectPosition(int random)
+    {
+        Vector3 forward = new Vector3(connectors[objectCount - 1].transform.position.x, connectors[objectCount - 1].transform.position.y, connectors[objectCount - 1].transform.position.z + 2);
+        Vector3 left = new Vector3(connectors[objectCount - 1].transform.position.x - 2, connectors[objectCount - 1].transform.position.y, connectors[objectCount - 1].transform.position.z);
+        Vector3 right = new Vector3(connectors[objectCount - 1].transform.position.x + 2, connectors[objectCount - 1].transform.position.y, connectors[objectCount - 1].transform.position.z);
+        Vector3 chosenDir = new Vector3(0, 0, 0);
+
+        switch (random)
+        {
+            case 1:
+                chosenDir = forward; break;
+            case 2:
+                chosenDir = left; break;
+            case 3:
+                chosenDir = right; break;
+        }
+        return chosenDir;
+    }
+
+    private Vector3 SelectRotation(int random)
+    {
+        Vector3 forward = new Vector3(90, 0, 0);
+        Vector3 left = new Vector3(90, 90, 0);
+        Vector3 right = new Vector3(90, -90, 0);
+        Vector3 chosenRot = new Vector3(0, 0, 0);
+        switch (random)
+        {
+            case 1:
+                chosenRot = forward; break;
+            case 2:
+                chosenRot = left; break;
+            case 3:
+                chosenRot = right; break;
+        }
+        return chosenRot;
+    }
+
+    private Vector3 SelectDirection(int random)
     {
         Vector3 forward = new Vector3(habitats[objectCount - 1].transform.position.x, habitats[objectCount - 1].transform.position.y, habitats[objectCount - 1].transform.position.z + 2);
         Vector3 left = new Vector3(habitats[objectCount - 1].transform.position.x - 2, habitats[objectCount - 1].transform.position.y, habitats[objectCount - 1].transform.position.z);
         Vector3 right = new Vector3(habitats[objectCount - 1].transform.position.x + 2, habitats[objectCount - 1].transform.position.y, habitats[objectCount - 1].transform.position.z);
         Vector3 chosenDir = new Vector3(0,0,0);
-        int random = Random.Range(1, 4);
         switch(random)
         {
             case 1:
@@ -177,6 +215,13 @@ public class ColonySystemGenerator : MonoBehaviour
                 chosenDir = right; break;
         }
         return chosenDir;
+    }
+
+
+
+    private void CorrectRotation()
+    {
+
     }
 
     private void CreateLaunchpad()
