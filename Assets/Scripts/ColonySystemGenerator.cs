@@ -18,7 +18,8 @@ public class ColonySystemGenerator : MonoBehaviour
         colonySize = Random.Range(2, 20);
         Init();
         objectCount = 0;
-        CreateColony();
+        //CreateColony();
+        GetPolarPosition();
     }
 	
 	void Update ()
@@ -62,6 +63,25 @@ public class ColonySystemGenerator : MonoBehaviour
         connectors = new GameObject[colonySize];
         conPositions = new Vector3[colonySize];
         randomValues = new int[objectCount + 1];
+    }
+
+    private void GetPolarPosition()
+    {
+        float radius = moon.GetComponent<SphereCollider>().radius * 100.5f;
+        for(int i = 0; i < 20; i++)
+        {
+            habitats[objectCount] = CreateEntity("Habitat Module " + objectCount, null, ((GameObject)Resources.Load("Cube")).GetComponent<MeshFilter>().sharedMesh, defaultMat);
+            //habitats[objectCount].transform.parent = moon.transform;
+            float angle = Random.value * 360f;
+
+            float x = Mathf.Cos(angle * Mathf.Deg2Rad) * radius;
+            float y = Mathf.Tan(angle * Mathf.Deg2Rad) * radius;
+            float z = Mathf.Sin(angle * Mathf.Deg2Rad) * radius;
+
+            Vector3 newPosition = moon.transform.position + new Vector3(x, 0, z);
+            habitats[objectCount].transform.position = newPosition;
+            habitats[objectCount].transform.LookAt(moon.transform);
+        }
     }
 
     private void CreateColony()
