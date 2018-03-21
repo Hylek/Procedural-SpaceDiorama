@@ -2,6 +2,7 @@
 
 public class ColonySystemGenerator : MonoBehaviour
 {
+    public GameObject spherePrefab;
     private GameObject[] habitats;
     private GameObject[] connectors;
     public Vector3[] habPositions;
@@ -15,11 +16,12 @@ public class ColonySystemGenerator : MonoBehaviour
 
 	void Start ()
     {
-        colonySize = Random.Range(2, 20);
+        colonySize = Random.Range(2, 50);
         Init();
         objectCount = 0;
         //CreateColony();
-        GetPolarPosition();
+        //GetPolarPosition();
+        GetRandomPosition();
     }
 	
 	void Update ()
@@ -65,6 +67,18 @@ public class ColonySystemGenerator : MonoBehaviour
         randomValues = new int[objectCount + 1];
     }
 
+    private void GetRandomPosition()
+    {
+        float radius = moon.transform.localScale.x / 2;
+
+        for (int i = 0; i < 20; i++)
+        {
+            habitats[objectCount] = CreateEntity("Habitat Module " + objectCount, null, ((GameObject)Resources.Load("Cube")).GetComponent<MeshFilter>().sharedMesh, defaultMat);
+            habitats[objectCount].transform.position = Random.onUnitSphere * (radius + habitats[objectCount].transform.localScale.y * 25.5f) + moon.transform.position;
+            habitats[objectCount].transform.LookAt(moon.transform);
+        }
+    }
+
     private void GetPolarPosition()
     {
         float radius = moon.GetComponent<SphereCollider>().radius * 100.5f;
@@ -75,13 +89,24 @@ public class ColonySystemGenerator : MonoBehaviour
             float angle = Random.value * 360f;
 
             float x = Mathf.Cos(angle * Mathf.Deg2Rad) * radius;
-            float y = Mathf.Tan(angle * Mathf.Deg2Rad) * radius;
             float z = Mathf.Sin(angle * Mathf.Deg2Rad) * radius;
 
             Vector3 newPosition = moon.transform.position + new Vector3(x, 0, z);
-            habitats[objectCount].transform.position = newPosition;
-            habitats[objectCount].transform.LookAt(moon.transform);
+
         }
+    }
+
+    private Vector3 PlaceNextConnector()
+    {
+        float radius = habitats[objectCount].GetComponent<SphereCollider>().radius * 1f;
+
+        float angle = Random.value * 1f;
+
+        float x = Mathf.Cos(angle * Mathf.Deg2Rad) * radius;
+        float z = Mathf.Sin(angle * Mathf.Deg2Rad) * radius;
+
+        Vector3 newPosition = habitats[objectCount].transform.position + new Vector3(x, 0, z);
+        return newPosition; 
     }
 
     private void CreateColony()
@@ -89,20 +114,19 @@ public class ColonySystemGenerator : MonoBehaviour
         // Create the first habitat module
         if(objectCount == 0)
         {
-            CreateHQ();
+            CreateHq();
             objectCount++;
         }
 
         for(objectCount = objectCount; objectCount < colonySize; objectCount++)
         {
-            randomValues[objectCount] = Random.Range(1, 4);
             if (IsNumberOdd() && objectCount > 0)
             {
-                CreateConnector(randomValues[objectCount]);
+                CreateConnector();
             }
             else if (!IsNumberOdd() && objectCount > 0)
             {
-                CreateHabitat(randomValues[objectCount]);
+                CreateHabitat();
             }
             //Debug.DrawRay(new Vector3(habitats[objectCount].transform.position.x, habitats[objectCount].transform.position.y - 1, habitats[objectCount].transform.position.z), Vector3.down);
         }
@@ -120,9 +144,11 @@ public class ColonySystemGenerator : MonoBehaviour
         }
     }
 
-    private void CreateHQ()
+    private void CreateHq()
     {
-        habitats[objectCount] = CreateEntity("HeadQuarters", null, ((GameObject)Resources.Load("Cube")).GetComponent<MeshFilter>().sharedMesh, defaultMat);
+        habitats[objectCount] = CreateEntity("HeadQuarters", null, ((GameObject)Resources.Load("Sphere")).GetComponent<MeshFilter>().sharedMesh, defaultMat);
+        //habitats[objectCount] = Instantiate(spherePrefab);
+        habitats[objectCount].AddComponent<SphereCollider>();
         habitats[objectCount].transform.parent = moon.transform;
 
         Vector3 offset = transform.position;
@@ -136,48 +162,53 @@ public class ColonySystemGenerator : MonoBehaviour
             rot = Quaternion.LookRotation(hit.normal);
             habitats[objectCount].transform.position = finalPos;
             habPositions[objectCount] = habitats[objectCount].transform.position;
-            habitats[objectCount].transform.rotation = rot;
+            //habitats[objectCount].transform.LookAt(moon.transform);
         }
     }
 
-    private void CreateHabitat(int random)
+    private void CreateHabitat()
     {
-        habitats[objectCount] = CreateEntity("Habitat Module " + objectCount, null, ((GameObject)Resources.Load("Cube")).GetComponent<MeshFilter>().sharedMesh, defaultMat);
+        habitats[objectCount] = CreateEntity("Habitat Module " + objectCount, null, ((GameObject)Resources.Load("Sphere")).GetComponent<MeshFilter>().sharedMesh, defaultMat);
+        habitats[objectCount].AddComponent<SphereCollider>();
         habitats[objectCount].transform.parent = moon.transform;
 
         //habitats[objectCount].transform.position = connectors[objectCount - 1].transform.position;
-        habitats[objectCount].transform.position = CorrectPosition(random); //new Vector3(connectors[objectCount - 1].transform.position.x, connectors[objectCount - 1].transform.position.y, connectors[objectCount - 1].transform.position.z/*Random.Range(1, 4)*/);
+        habitats[objectCount].transform.position = new Vector3(connectors[objectCount - 1].transform.position.x + 2, connectors[objectCount - 1].transform.position.y, connectors[objectCount - 1].transform.position.z/*Random.Range(1, 4)*/);
           
        Vector3 origin = new Vector3(habitats[objectCount].transform.position.x, habitats[objectCount].transform.position.y - 0.01f, habitats[objectCount].transform.position.z);
        RaycastHit hit;
        if (Physics.Raycast(origin, Vector3.down, out hit))
        {
            Vector3 finalPos = hit.point;
-            finalPos.y = finalPos.y + 0.1f;
-           Quaternion finalRot = Quaternion.LookRotation(hit.normal);
-            habitats[objectCount].transform.position = finalPos;
-            habitats[objectCount].transform.rotation = new Quaternion(finalRot.x, 0, finalRot.z, 0);
+           finalPos.y = finalPos.y + 0.5f;
+           //Quaternion finalRot = Quaternion.LookRotation(hit.normal, Vector3.up);
+           habitats[objectCount].transform.position = finalPos;
+           habitats[objectCount].transform.LookAt(moon.transform);
+
+
+
        }
     }
 
-    private void CreateConnector(int random)
+    private void CreateConnector()
     {
         connectors[objectCount] = CreateEntity("Connector " + objectCount, null, ((GameObject)Resources.Load("Cylinder")).GetComponent<MeshFilter>().sharedMesh, defaultMat);
         connectors[objectCount].transform.parent = moon.transform;
+        connectors[objectCount].transform.eulerAngles = new Vector3(90, 0, 0);
+        connectors[objectCount].transform.position = PlaceNextConnector(); //new Vector3(habitats[objectCount - 1].transform.position.x + 2, habitats[objectCount - 1].transform.position.y, habitats[objectCount - 1].transform.position.z);
 
         // THIS IS ONLY FOR THE TEST CYLINDER
-        connectors[objectCount].transform.localScale = new Vector3(0.005f, 0.01f, 0.005f);
-        connectors[objectCount].transform.Rotate(SelectRotation(random));
-        connectors[objectCount].transform.position = SelectDirection(random); //new Vector3(habitats[objectCount - 1].transform.position.x, habitats[objectCount - 1].transform.position.y, habitats[objectCount - 1].transform.position.z + 2);
+        connectors[objectCount].transform.localScale = new Vector3(0.005f, 0.035f, 0.005f); //new Vector3(habitats[objectCount - 1].transform.position.x, habitats[objectCount - 1].transform.position.y, habitats[objectCount - 1].transform.position.z + 2);
                                                                         //connectors[objectCount].transform.localScale = new Vector3(habitats[objectCount - 1].transform.localScale.x, habitats[objectCount - 1].transform.localScale.y, habitats[objectCount - 1].transform.localScale.z);
         Vector3 origin = new Vector3(connectors[objectCount].transform.position.x, connectors[objectCount].transform.position.y - 0.01f, connectors[objectCount].transform.position.z);
         RaycastHit hit;
         if (Physics.Raycast(origin, Vector3.down, out hit))
         {
             Vector3 finalPos = hit.point;
+            finalPos.y = finalPos.y + 0.5f;
             Quaternion finalRot = Quaternion.LookRotation(hit.normal);
             connectors[objectCount].transform.position = finalPos;
-           // connectors[objectCount].transform.rotation = finalRot;
+            connectors[objectCount].transform.LookAt(moon.transform);
         }
 
     }
