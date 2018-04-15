@@ -30,14 +30,8 @@ public class SolarSystemScript : MonoBehaviour
         CreatePlanets();
         ModifyPlanets();
         GenerateDistantGalaxies();
-        //GenerateSpiralGalaxy();
 
     }
-
-	void Update ()
-    {
-		
-	}
 
     private void CreateStar()
     {
@@ -52,14 +46,14 @@ public class SolarSystemScript : MonoBehaviour
             starMaterial.color = new Color32((byte)Random.Range(10, 150), (byte)Random.Range(150, 255), (byte)Random.Range(150, 255), 255);
             starMaterial.EnableKeyword("_EMISSION");
             starMaterial.SetColor("_EmissionColor", starMaterial.color);
-            planetCount = Random.Range(4, 11);
+            planetCount = Random.Range(3, 9);
         } else if (scaleAmount > 10.0f)
         {
             Debug.Log("Big Star!");
             starMaterial.color = new Color32((byte)Random.Range(150, 255), (byte)Random.Range(50, 200), (byte)Random.Range(25, 100), 255);
             starMaterial.EnableKeyword("_EMISSION");
             starMaterial.SetColor("_EmissionColor", starMaterial.color);
-            planetCount = Random.Range(11, 21);
+            planetCount = Random.Range(5, 16);
         }
         planets = new GameObject[planetCount];
 
@@ -93,6 +87,7 @@ public class SolarSystemScript : MonoBehaviour
             positions[i] = new Vector3(x, 0, z);
             planets[i] = Instantiate(planetPrefab, positions[i], Quaternion.identity);
             planets[i].GetComponent<Orbit>().target = star;
+            planets[i].name = "Planet " + i;
 
             minDistance += Random.Range(5.0f, 10.0f);
             maxDistance += Random.Range(5.0f, 10.0f);
@@ -134,12 +129,17 @@ public class SolarSystemScript : MonoBehaviour
     private void GenerateDistantGalaxies()
     {
         GameObject galaxy;
-        for (int i = 0; i < 15; i++)
+        for (int i = 0; i < 10; i++)
         {
             Vector3 position = Random.onUnitSphere * (GetComponent<SphereCollider>().radius) + Vector3.zero;
             galaxy = Instantiate(galaxyPrefab, position, Quaternion.identity);
             galaxy.transform.eulerAngles = new Vector3(Random.Range(0, 361), Random.Range(0, 361), Random.Range(0, 361));
         }
+    }
+
+    private void PlanetMeshMorpher()
+    {
+
     }
 
     private Texture2D GenerateAtmosphere()
@@ -153,27 +153,30 @@ public class SolarSystemScript : MonoBehaviour
 
         // Create new LibNoise Perlin Noise to make the atmosphere and set values
         Perlin pNoise = new Perlin();
-        Billow noise = new Billow();
-        noise.Frequency = 3;
-        noise.OctaveCount = 6;
-        noise.Persistence = 0.3f;
-        noise.Seed = epoch;
+        //pNoise.Frequency = 3;
+        //pNoise.OctaveCount = 6;
+        //pNoise.Persistence = 0.3f;
+        //pNoise.Seed = epoch;
 
-        ModuleBase noiseModule = new Add(noise, pNoise);
+        Billow bNoise = new Billow();
+        bNoise.Frequency = 3;
+        bNoise.OctaveCount = 6;
+        bNoise.Persistence = 0.3f;
+        bNoise.Seed = epoch;
+
+        ModuleBase noiseModule = new Add(bNoise, pNoise);
         atmosphere = new Noise2D(textureWidth, textureHeight, noiseModule);
         atmosphere.GenerateSpherical(-90.0, 90.0, -180.0, 180.0);
         clouds = atmosphere.GetTexture(LibNoise.Unity.Gradient.Grayscale);
 
         // Perform colour change
         Color[] pixels = clouds.GetPixels(0, 0, clouds.width, clouds.height, 0);
-        Color target = new Color(0.6f, 0.6f, 0.6f);
         for (int i = 0; i < pixels.Length; i++)
         {
             pixels[i] = new Color(pixels[i].r, pixels[i].g, pixels[i].b, pixels[i].grayscale);
         }
         clouds.SetPixels(0, 0, clouds.width, clouds.height, pixels, 0);
         clouds.Apply();
-
 
         return clouds;
     }
