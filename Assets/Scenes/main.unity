@@ -142,9 +142,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 686dc4dbab198064cb53ef4108e5eaf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  starMaterial: {fileID: 2100000, guid: 7ea8447b115406347951851f6f302b27, type: 2}
-  defaultMat: {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
-  planetMat: {fileID: 2100000, guid: d120913a038bd3145bf7ccf00bd2dc47, type: 2}
+  starMaterial: {fileID: 0}
+  defaultMat: {fileID: 0}
+  planetMat: {fileID: 0}
 --- !u!4 &509124687
 Transform:
   m_ObjectHideFlags: 0
@@ -192,53 +192,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 500
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1001 &1155108526
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4755450382434284, guid: 466b236d978522c4b8c3e9858c104562, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 408.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4755450382434284, guid: 466b236d978522c4b8c3e9858c104562, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 717.9139
-      objectReference: {fileID: 0}
-    - target: {fileID: 4755450382434284, guid: 466b236d978522c4b8c3e9858c104562, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 1135.336
-      objectReference: {fileID: 0}
-    - target: {fileID: 4755450382434284, guid: 466b236d978522c4b8c3e9858c104562, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4755450382434284, guid: 466b236d978522c4b8c3e9858c104562, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4755450382434284, guid: 466b236d978522c4b8c3e9858c104562, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4755450382434284, guid: 466b236d978522c4b8c3e9858c104562, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4755450382434284, guid: 466b236d978522c4b8c3e9858c104562, type: 2}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 114430344799383824, guid: 466b236d978522c4b8c3e9858c104562,
-        type: 2}
-      propertyPath: starMaterial
-      value: 
-      objectReference: {fileID: 2100000, guid: 7ea8447b115406347951851f6f302b27, type: 2}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 466b236d978522c4b8c3e9858c104562, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &1388495779
 GameObject:
   m_ObjectHideFlags: 0

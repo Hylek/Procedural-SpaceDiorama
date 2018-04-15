@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using LibNoise;
+using LibNoise.Unity;
+using LibNoise.Unity.Generator;
+using LibNoise.Unity.Operator;
 
 public class SolarSystemScript : MonoBehaviour
 {
 
     public GameObject galaxyPrefab;
-
 
     public GameObject[] galaxyStars;
     public GameObject spherePrefab;
@@ -17,11 +20,15 @@ public class SolarSystemScript : MonoBehaviour
     public Material starMaterial;
     public int planetCount;
 
+    public Noise2D atmosphere;
+    System.DateTime seedEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc);
 
-	void Start ()
+
+    void Start ()
     {
         CreateStar();
         CreatePlanets();
+        ModifyPlanets();
         GenerateDistantGalaxies();
         //GenerateSpiralGalaxy();
 
@@ -70,11 +77,14 @@ public class SolarSystemScript : MonoBehaviour
     private void CreatePlanets()
     {
         Vector3[] positions = new Vector3[planetCount];
+        float minDistance = 10.0f;
+        float maxDistance = 25.0f;
+    
         for (int i = 0; i < planetCount; i++)
         {
             // Use a random angle and distance from star to place the planets in the solar system
             float angle = Random.Range(0, 361.0f);
-            float distance = Random.Range(5.0f, 31.0f);
+            float distance = Random.Range(minDistance, maxDistance);
 
             // Get the position
             float x = Mathf.Cos(angle * Mathf.Deg2Rad) * distance;
@@ -82,20 +92,22 @@ public class SolarSystemScript : MonoBehaviour
 
             positions[i] = new Vector3(x, 0, z);
             planets[i] = Instantiate(planetPrefab, positions[i], Quaternion.identity);
+            planets[i].GetComponent<Orbit>().target = star;
 
-            if (i != 0)
-            {
-                float distanceFromOthers = Vector3.Distance(positions[i], positions[i - 1]);
-                Debug.Log("Distance: " + distanceFromOthers);
+            minDistance += Random.Range(5.0f, 10.0f);
+            maxDistance += Random.Range(5.0f, 10.0f);
 
-                if (distanceFromOthers < 10.0f)
-                {
-                   // Destroy(planets[i]);
-                   // planetCount++;
-                    Debug.Log("Destroyed Planet!");
-                }
-            }
-            //Debug.Log(positions[i]);
+            planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere();
+        }
+    }
+
+    private void ModifyPlanets()
+    {
+        float distance;
+        for (int i = 0; i < planetCount; i++)
+        {
+            distance = Vector3.Distance(planets[i].transform.position, star.transform.position);
+            planets[i].GetComponent<Orbit>().orbitSpeed = (1f / distance) * 100.0f;
         }
     }
 
@@ -128,5 +140,40 @@ public class SolarSystemScript : MonoBehaviour
             galaxy = Instantiate(galaxyPrefab, position, Quaternion.identity);
             galaxy.transform.eulerAngles = new Vector3(Random.Range(0, 361), Random.Range(0, 361), Random.Range(0, 361));
         }
+    }
+
+    private Texture2D GenerateAtmosphere()
+    {
+        int textureHeight = 256;
+        int textureWidth = 512;
+        Texture2D clouds = new Texture2D(textureWidth, textureHeight, TextureFormat.ARGB32, false);
+
+        // Use epochtime to generate a seed, meaning each one is guarenteed to be different, rather than Random.range
+        int epoch = (int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds;
+
+        // Create new LibNoise Perlin Noise to make the atmosphere and set values
+        Perlin noise = new Perlin();
+        noise.Frequency = 3;
+        noise.OctaveCount = 6;
+        noise.Persistence = 0.3f;
+        noise.Seed = epoch;
+
+        ModuleBase noiseModule = noise;
+        atmosphere = new Noise2D(textureWidth, textureHeight, noiseModule);
+        atmosphere.GenerateSpherical(-90.0, 90.0, -180.0, 180.0);
+        clouds = atmosphere.GetTexture(LibNoise.Unity.Gradient.Grayscale);
+
+        // Perform colour change
+        Color[] pixels = clouds.GetPixels(0, 0, clouds.width, clouds.height, 0);
+        Color target = new Color(0.6f, 0.6f, 0.6f);
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            pixels[i] = new Color(pixels[i].r, pixels[i].g, pixels[i].b, pixels[i].grayscale);
+        }
+        clouds.SetPixels(0, 0, clouds.width, clouds.height, pixels, 0);
+        clouds.Apply();
+
+
+        return clouds;
     }
 }

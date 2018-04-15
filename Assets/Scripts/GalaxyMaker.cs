@@ -12,8 +12,9 @@ public class GalaxyMaker : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update () {
-		
+	void Update ()
+    {
+        transform.Rotate(0, Time.deltaTime / 2, 0);
 	}
 
     private void GenerateSpiralGalaxy()
@@ -22,11 +23,10 @@ public class GalaxyMaker : MonoBehaviour {
         GameObject star;
 
         // Equation coefficients
-        float a = Random.Range(40, 81); // Global size of galaxy
+        float a = Random.Range(40, 161); // Global size of galaxy
         float b = Random.Range(11.12f, 12.42f); // Bulge-to-arm, bigger value = bigger sweep
-        float n = Random.Range(0.706f, 0.902f); // Spiral tightness
+        float n = Random.Range(0.706f, 0.802f); // Spiral tightness
         float brightnessDistance = Random.Range(a / 1.2f, a / 2.6f);
-        transform.eulerAngles = new Vector3(Random.Range(0, 361), Random.Range(0, 361), Random.Range(0, 361));
 
         for (int i = 0; i < 360 * spirals; i++)
         {
@@ -42,7 +42,7 @@ public class GalaxyMaker : MonoBehaviour {
                 Vector3 finalPosition = transform.position + new Vector3(x, 0, z);
 
                 float starDistance = Vector3.Distance(finalPosition, transform.position);
-                star = Instantiate(spherePrefab, finalPosition, Quaternion.identity, transform);
+                star = Instantiate(spherePrefab, finalPosition, new Quaternion(Random.Range(0, 361), Random.Range(0, 361), Random.Range(0, 361), 0), transform);
 
                 if (starDistance > brightnessDistance)
                 {

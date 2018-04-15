@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4890553005434000}
   - component: {fileID: 33335342102533524}
   - component: {fileID: 23006502606256790}
+  - component: {fileID: 114876841161017272}
   m_Layer: 0
   m_Name: Atmosphere
   m_TagString: Untagged
@@ -39,6 +40,7 @@ GameObject:
   - component: {fileID: 33983858874694744}
   - component: {fileID: 135311569972276512}
   - component: {fileID: 23865915079426668}
+  - component: {fileID: 114622602326711044}
   m_Layer: 0
   m_Name: Planet
   m_TagString: Untagged
@@ -68,7 +70,7 @@ Transform:
   m_GameObject: {fileID: 1495902671404644}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
+  m_LocalScale: {x: 1.02, y: 1.02, z: 1.02}
   m_Children: []
   m_Father: {fileID: 4114372774350554}
   m_RootOrder: 0
@@ -155,6 +157,31 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1601925230114730}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &114622602326711044
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1601925230114730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 170df8c08037d8f4abbbb9bd2060b95e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  orbitSpeed: 1
+  orbitAngle: {x: 0, y: 1, z: 0}
+--- !u!114 &114876841161017272
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1495902671404644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ef607b22726f7045987189267c3d322, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!135 &135311569972276512
 SphereCollider:
   m_ObjectHideFlags: 1
