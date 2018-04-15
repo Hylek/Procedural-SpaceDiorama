@@ -152,13 +152,14 @@ public class SolarSystemScript : MonoBehaviour
         int epoch = (int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds;
 
         // Create new LibNoise Perlin Noise to make the atmosphere and set values
-        Perlin noise = new Perlin();
+        Perlin pNoise = new Perlin();
+        Billow noise = new Billow();
         noise.Frequency = 3;
         noise.OctaveCount = 6;
         noise.Persistence = 0.3f;
         noise.Seed = epoch;
 
-        ModuleBase noiseModule = noise;
+        ModuleBase noiseModule = new Add(noise, pNoise);
         atmosphere = new Noise2D(textureWidth, textureHeight, noiseModule);
         atmosphere.GenerateSpherical(-90.0, 90.0, -180.0, 180.0);
         clouds = atmosphere.GetTexture(LibNoise.Unity.Gradient.Grayscale);
