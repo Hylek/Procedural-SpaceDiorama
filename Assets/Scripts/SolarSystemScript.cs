@@ -92,7 +92,9 @@ public class SolarSystemScript : MonoBehaviour
             minDistance += Random.Range(5.0f, 10.0f);
             maxDistance += Random.Range(5.0f, 10.0f);
 
-            planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere();
+            // Use epochtime to generate a seed, meaning each one is guarenteed to be different, rather than Random.range
+            planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i);
+            planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTemperateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i);
         }
     }
 
@@ -142,21 +144,18 @@ public class SolarSystemScript : MonoBehaviour
 
     }
 
-    private Texture2D GenerateAtmosphere()
+    private Texture2D GenerateAtmosphere(int epoch)
     {
         int textureHeight = 256;
         int textureWidth = 512;
         Texture2D clouds = new Texture2D(textureWidth, textureHeight, TextureFormat.ARGB32, false);
 
-        // Use epochtime to generate a seed, meaning each one is guarenteed to be different, rather than Random.range
-        int epoch = (int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds;
-
         // Create new LibNoise Perlin Noise to make the atmosphere and set values
         Perlin pNoise = new Perlin();
-        //pNoise.Frequency = 3;
-        //pNoise.OctaveCount = 6;
-        //pNoise.Persistence = 0.3f;
-        //pNoise.Seed = epoch;
+        pNoise.Frequency = 2;
+        pNoise.OctaveCount = 2;
+        pNoise.Persistence = 0.3f;
+        pNoise.Seed = epoch;
 
         Billow bNoise = new Billow();
         bNoise.Frequency = 3;
@@ -179,5 +178,50 @@ public class SolarSystemScript : MonoBehaviour
         clouds.Apply();
 
         return clouds;
+    }
+
+    private Texture2D GenerateTerrain(int epoch/*, Color colorA, Color colorB*/)
+    {
+        int textureHeight = 256;
+        int textureWidth = 512;
+        Texture2D terrain = new Texture2D(textureWidth, textureHeight, TextureFormat.ARGB32, false);
+
+        // Create new LibNoise Perlin Noise to make the atmosphere and set values
+        Perlin pNoise = new Perlin();
+        pNoise.Frequency = 2;
+        pNoise.OctaveCount = 2;
+        pNoise.Lacunarity = 2;
+        pNoise.Seed = epoch;
+
+        //Billow bNoise = new Billow();
+        //bNoise.Frequency = 3;
+        //bNoise.OctaveCount = 6;
+        //bNoise.Persistence = 0.3f;
+        //bNoise.Seed = epoch;
+
+        ModuleBase noiseModule = pNoise; //new Add(bNoise, pNoise);
+        atmosphere = new Noise2D(textureWidth, textureHeight, noiseModule);
+        atmosphere.GenerateSpherical(-90.0, 90.0, -180.0, 180.0);
+        terrain = atmosphere.GetTexture(LibNoise.Unity.Gradient.Grayscale);
+
+        // Perform colour change
+        Color[] pixels = terrain.GetPixels(0, 0, terrain.width, terrain.height, 0);
+        Color targetOcean = new Color(Random.Range(0.2f, 0.45f), Random.Range(0.2f, 0.45f), Random.Range(0.2f, 0.45f));
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            if(pixels[i].grayscale > targetOcean.grayscale)
+            {
+                pixels[i] = new Color(0, 0.25f, 0.55f, 1);
+            }
+            else
+            {
+                pixels[i] = new Color(0, 0.85f, 0.1f, 1);
+            }
+            //pixels[i] = new Color(pixels[i].r, pixels[i].g, pixels[i].b, pixels[i].grayscale);
+        }
+        terrain.SetPixels(0, 0, terrain.width, terrain.height, pixels, 0);
+        terrain.Apply();
+
+        return terrain;
     }
 }
