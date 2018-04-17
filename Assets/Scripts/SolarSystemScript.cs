@@ -20,7 +20,6 @@ public class SolarSystemScript : MonoBehaviour
     public Material starMaterial;
     public int planetCount;
 
-    public Noise2D atmosphere;
     System.DateTime seedEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc);
 
 
@@ -93,8 +92,8 @@ public class SolarSystemScript : MonoBehaviour
             maxDistance += Random.Range(5.0f, 10.0f);
 
             // Use epochtime to generate a seed, meaning each one is guarenteed to be different, rather than Random.range
-            planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i);
-            planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTemperateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i);
+            //planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 2, 2, 1, 1, 1, 1, true);
+            //planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i);
         }
     }
 
@@ -103,8 +102,53 @@ public class SolarSystemScript : MonoBehaviour
         float distance;
         for (int i = 0; i < planetCount; i++)
         {
+            int chance = Random.Range(1, 101);
             distance = Vector3.Distance(planets[i].transform.position, star.transform.position);
-            planets[i].GetComponent<Orbit>().orbitSpeed = (1f / distance) * 100.0f;
+            planets[i].GetComponent<Orbit>().orbitSpeed = (1f / distance) * 50.0f;
+
+            Debug.Log("Planet " + i + " Distance from star " + distance);
+
+            // Closest planets
+            if(distance < 25) 
+            {
+                // Planets closest should be smaller
+                float newScale = Random.Range(0.5f, 2.5f);
+                planets[i].transform.localScale = new Vector3(newScale, newScale, newScale);
+
+                // Planets closest should have little to no atmosphere and more barren colours
+                if(chance > 40.0f)
+                {
+                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 1, 3, 2, 1, 1, 1, false);
+                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0.35f, 0.35f, 0.35f), new Color(0.55f, 0.55f, 0.55f), 2, 3, 2, 2);
+                }
+                else
+                {
+                    // Destroy the atmosphere
+                    Destroy(planets[i].transform.GetChild(0).gameObject);
+                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0.35f, 0.35f, 0.35f), new Color(0.55f, 0.55f, 0.55f), 2, 3, 2, 2);
+                }
+            }
+
+            // Closest planets
+            if (distance > 25 && distance < 50)
+            {
+                // Planets closest should be smaller
+                float newScale = Random.Range(0.5f, 2.5f);
+                planets[i].transform.localScale = new Vector3(newScale, newScale, newScale);
+
+                // Planets closest should have little to no atmosphere and more barren colours
+                if (chance > 40.0f)
+                {
+                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 1, 3, 2, 1, 1, 1, false);
+                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0, 0.25f, 0.55f, 1), new Color(0, 0.85f, 0.1f, 1), 2, 3, 2, 2);
+                }
+                else
+                {
+                    // Destroy the atmosphere
+                    Destroy(planets[i].transform.GetChild(0).gameObject);
+                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0, 0.25f, 0.55f, 1), new Color(0, 0.85f, 0.1f, 1), 2, 3, 2, 2);
+                }
+            }
         }
     }
 
@@ -144,29 +188,39 @@ public class SolarSystemScript : MonoBehaviour
 
     }
 
-    private Texture2D GenerateAtmosphere(int epoch)
+    private Texture2D GenerateAtmosphere(int epoch, float bFrequency, int bOctave, float bPersistence, float pFrequency, int pOctave, float pPersistence, bool useBothNoises)
     {
         int textureHeight = 256;
         int textureWidth = 512;
         Texture2D clouds = new Texture2D(textureWidth, textureHeight, TextureFormat.ARGB32, false);
+        Noise2D noise;
 
         // Create new LibNoise Perlin Noise to make the atmosphere and set values
         Perlin pNoise = new Perlin();
-        pNoise.Frequency = 2;
-        pNoise.OctaveCount = 2;
-        pNoise.Persistence = 0.3f;
+        pNoise.Frequency = pFrequency;
+        pNoise.OctaveCount = pOctave;
+        pNoise.Persistence = pPersistence;
         pNoise.Seed = epoch;
 
         Billow bNoise = new Billow();
-        bNoise.Frequency = 3;
-        bNoise.OctaveCount = 6;
-        bNoise.Persistence = 0.3f;
+        bNoise.Frequency = bFrequency;
+        bNoise.OctaveCount = bOctave;
+        bNoise.Persistence = bPersistence;
         bNoise.Seed = epoch;
 
-        ModuleBase noiseModule = new Add(bNoise, pNoise);
-        atmosphere = new Noise2D(textureWidth, textureHeight, noiseModule);
-        atmosphere.GenerateSpherical(-90.0, 90.0, -180.0, 180.0);
-        clouds = atmosphere.GetTexture(LibNoise.Unity.Gradient.Grayscale);
+        ModuleBase noiseModule;
+        if (useBothNoises)
+        {
+            noiseModule = new Add(bNoise, pNoise);
+        }
+        else
+        {
+            noiseModule = bNoise;
+        }
+
+        noise = new Noise2D(textureWidth, textureHeight, noiseModule);
+        noise.GenerateSpherical(-90.0, 90.0, -180.0, 180.0);
+        clouds = noise.GetTexture(LibNoise.Unity.Gradient.Grayscale);
 
         // Perform colour change
         Color[] pixels = clouds.GetPixels(0, 0, clouds.width, clouds.height, 0);
@@ -180,29 +234,25 @@ public class SolarSystemScript : MonoBehaviour
         return clouds;
     }
 
-    private Texture2D GenerateTerrain(int epoch/*, Color colorA, Color colorB*/)
+    private Texture2D GenerateTerrain(int epoch, Color colorA, Color colorB, float frequency, int octaves, float lacunarity, float persistence)
     {
         int textureHeight = 256;
         int textureWidth = 512;
         Texture2D terrain = new Texture2D(textureWidth, textureHeight, TextureFormat.ARGB32, false);
+        Noise2D noise;
 
         // Create new LibNoise Perlin Noise to make the atmosphere and set values
         Perlin pNoise = new Perlin();
-        pNoise.Frequency = 2;
-        pNoise.OctaveCount = 2;
-        pNoise.Lacunarity = 2;
+        pNoise.Frequency = frequency;
+        pNoise.OctaveCount = octaves;
+        pNoise.Lacunarity = lacunarity;
+        pNoise.Persistence = persistence;
         pNoise.Seed = epoch;
 
-        //Billow bNoise = new Billow();
-        //bNoise.Frequency = 3;
-        //bNoise.OctaveCount = 6;
-        //bNoise.Persistence = 0.3f;
-        //bNoise.Seed = epoch;
-
-        ModuleBase noiseModule = pNoise; //new Add(bNoise, pNoise);
-        atmosphere = new Noise2D(textureWidth, textureHeight, noiseModule);
-        atmosphere.GenerateSpherical(-90.0, 90.0, -180.0, 180.0);
-        terrain = atmosphere.GetTexture(LibNoise.Unity.Gradient.Grayscale);
+        ModuleBase noiseModule = pNoise;
+        noise = new Noise2D(textureWidth, textureHeight, noiseModule);
+        noise.GenerateSpherical(-90.0, 90.0, -180.0, 180.0);
+        terrain = noise.GetTexture(LibNoise.Unity.Gradient.Grayscale);
 
         // Perform colour change
         Color[] pixels = terrain.GetPixels(0, 0, terrain.width, terrain.height, 0);
@@ -211,11 +261,11 @@ public class SolarSystemScript : MonoBehaviour
         {
             if(pixels[i].grayscale > targetOcean.grayscale)
             {
-                pixels[i] = new Color(0, 0.25f, 0.55f, 1);
+                pixels[i] = colorA; //new Color(0, 0.25f, 0.55f, 1);
             }
             else
             {
-                pixels[i] = new Color(0, 0.85f, 0.1f, 1);
+                pixels[i] = colorB; //new Color(0, 0.85f, 0.1f, 1);
             }
             //pixels[i] = new Color(pixels[i].r, pixels[i].g, pixels[i].b, pixels[i].grayscale);
         }

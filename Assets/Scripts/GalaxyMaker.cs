@@ -26,7 +26,7 @@ public class GalaxyMaker : MonoBehaviour {
         float a = Random.Range(40, 161); // Global size of galaxy
         float b = Random.Range(11.12f, 12.42f); // Bulge-to-arm, bigger value = bigger sweep
         float n = Random.Range(0.706f, 0.802f); // Spiral tightness
-        float brightnessDistance = Random.Range(a / 1.2f, a / 2.6f);
+        float brightnessDistance = Random.Range(a / 1.2f, a / 2.2f);
 
         for (int i = 0; i < 360 * spirals; i++)
         {
@@ -46,15 +46,35 @@ public class GalaxyMaker : MonoBehaviour {
 
                 if (starDistance > brightnessDistance)
                 {
-                    star.GetComponent<Renderer>().material.color = new Color32((byte)Random.Range(50, 150), (byte)Random.Range(50, 150), (byte)Random.Range(50, 150), 255);
-                    star.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
-                    star.GetComponent<Renderer>().material.SetColor("_EmissionColor", star.GetComponent<Renderer>().material.color);
+                    int chance = Random.Range(1, 101);
+                    if (chance > 80)
+                    {
+                        star.GetComponent<Renderer>().material.color = new Color32((byte)Random.Range(125, 255), (byte)Random.Range(125, 255), (byte)Random.Range(125, 255), 255);
+                        star.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+                        star.GetComponent<Renderer>().material.SetColor("_EmissionColor", star.GetComponent<Renderer>().material.color);
+                    }
+                    else
+                    {
+                        star.GetComponent<Renderer>().material.color = new Color32((byte)Random.Range(50, 150), (byte)Random.Range(50, 150), (byte)Random.Range(50, 150), 255);
+                        star.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+                        star.GetComponent<Renderer>().material.SetColor("_EmissionColor", star.GetComponent<Renderer>().material.color);
+                    }
                 } 
                 else if (starDistance < brightnessDistance)
                 {
-                    star.GetComponent<Renderer>().material.color = new Color32((byte)Random.Range(125, 255), (byte)Random.Range(125, 255), (byte)Random.Range(125, 255), 255);
-                    star.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
-                    star.GetComponent<Renderer>().material.SetColor("_EmissionColor", star.GetComponent<Renderer>().material.color);
+                    int chance = Random.Range(1, 101);
+                    if (chance > 20)
+                    {
+                        star.GetComponent<Renderer>().material.color = new Color32((byte)Random.Range(125, 255), (byte)Random.Range(125, 255), (byte)Random.Range(125, 255), 255);
+                        star.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+                        star.GetComponent<Renderer>().material.SetColor("_EmissionColor", star.GetComponent<Renderer>().material.color);
+                    }
+                    else
+                    {
+                        star.GetComponent<Renderer>().material.color = new Color32((byte)Random.Range(50, 150), (byte)Random.Range(50, 150), (byte)Random.Range(50, 150), 255);
+                        star.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+                        star.GetComponent<Renderer>().material.SetColor("_EmissionColor", star.GetComponent<Renderer>().material.color);
+                    }
                 }
 
             }
