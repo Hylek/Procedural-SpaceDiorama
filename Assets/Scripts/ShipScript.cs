@@ -11,6 +11,7 @@ public class ShipScript : MonoBehaviour
     private float maxForce = 0.25f;
     private float maxSpeed = 0.15f;
     private Vector3 velocity = Vector3.zero;
+    private Vector3 offset = new Vector3(-90, 0, 90);
 
 	void Start ()
     {
@@ -22,8 +23,12 @@ public class ShipScript : MonoBehaviour
 	void Update ()
     {
         float step = 1.5f * Time.deltaTime;
-        //transform.position = Vector3.MoveTowards(transform.position, target.transform.position, step);
+
+        // Look at the target destination
         transform.LookAt(target.transform.position);
+
+        // Counteract the wrong rotations due to blender being wank
+        transform.Rotate(-90, 0, 90);
 
         float distance = Vector3.Distance(transform.position, target.transform.position);
         if(distance < 1.5f)

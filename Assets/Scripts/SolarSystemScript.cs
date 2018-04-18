@@ -121,12 +121,14 @@ public class SolarSystemScript : MonoBehaviour
                     //planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0, 1.1f), Random.Range(0, 6), Random.Range(0, 1.1f), Random.Range(0, 1.1f), Random.Range(0, 6), Random.Range(0, 1.1f), true);
                     Destroy(planets[i].transform.GetChild(0).gameObject);
                     planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0.45f, 0.35f, 0.35f), new Color(0.65f, 0.55f, 0.55f), 2, 3, 2, 2, Random.Range(0, 1.1f));
+                    planets[i].name = "Barren " + i;
                 }
                 else
                 {
                     // Destroy the atmosphere
                     Destroy(planets[i].transform.GetChild(0).gameObject);
                     planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0.45f, 0.35f, 0.35f), new Color(0.65f, 0.55f, 0.55f), 2, 3, 2, 2, Random.Range(0, 1.1f));
+                    planets[i].name = "Barren " + i;
                 }
             }
 
@@ -148,6 +150,7 @@ public class SolarSystemScript : MonoBehaviour
                     // Planets closest should have little to no atmosphere and more barren colours
                     planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 3, 6, 0.3f, 1, 1, 1, true);
                     planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0, 0.25f, 0.55f, 1), new Color(0, 0.85f, 0.1f, 1), Random.Range(1, 3), Random.Range(1, 4), Random.Range(1, 4), Random.Range(1, 5), Random.Range(0.1f, 0.2f));
+                    planets[i].name = "Temperate " + i;
                 }
                 else // a Gas giant
                 {
@@ -157,6 +160,7 @@ public class SolarSystemScript : MonoBehaviour
                     // Planets closest should have little to no atmosphere and more barren colours
                     planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0, 4), Random.Range(0, 4), Random.Range(0, 1.4f), Random.Range(0, 3.2f), Random.Range(0, 4), Random.Range(0, 2.4f), true);
                     planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(Random.Range(0, 1.1f), Random.Range(0, 1.1f), Random.Range(0, 1.1f), 1), new Color(Random.Range(0, 1.1f), Random.Range(0, 1.1f), Random.Range(0, 1.1f), 1), Random.Range(3, 7), Random.Range(1, 7), Random.Range(1, 8), Random.Range(1, 9), Random.Range(0.1f, 0.85f));
+                    planets[i].name = "Gas " + i;
                 }
 
             }
@@ -168,6 +172,7 @@ public class SolarSystemScript : MonoBehaviour
                 // Planets closest should have little to no atmosphere and more barren colours
                 planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0, 4), Random.Range(0, 4), Random.Range(0, 1.4f), Random.Range(0, 3.2f), Random.Range(0, 4), Random.Range(0, 2.4f), true);
                 planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(Random.Range(0, 1.1f), Random.Range(0, 1.1f), Random.Range(0, 1.1f), 1), new Color(Random.Range(0, 1.1f), Random.Range(0, 1.1f), Random.Range(0, 1.1f), 1), Random.Range(3, 7), Random.Range(1, 7), Random.Range(1, 8), Random.Range(1, 9), Random.Range(0.1f, 0.85f));
+                planets[i].name = "Gas " + i;
             }
         }
     }

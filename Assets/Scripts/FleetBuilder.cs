@@ -5,12 +5,23 @@ using UnityEngine;
 public class FleetBuilder : MonoBehaviour
 {
     public GameObject fighterBase;
+    public GameObject colonyBase;
 
     // Fleet arrays
     public GameObject[] shipArray;
 
     public Mesh[] fighterParts;
+    public Mesh[] colonyShipParts;
+
+    public GameObject[] colonyShipsTest;
+
     public Material fighterMaterial;
+
+    private void Start()
+    {
+        colonyShipsTest = new GameObject[1];
+        CreateColonyShip(1, transform.position, colonyShipsTest);
+    }
 
     public void CreateFighter(int fighterCount, Vector3 spawnPosition, GameObject[] shipArray)
     {
@@ -95,6 +106,134 @@ public class FleetBuilder : MonoBehaviour
                     shipArray[i].transform.GetChild(4).GetComponent<MeshFilter>().mesh = fighterParts[Random.Range(3, 5)];
                 }
             }
+        }
+    }
+
+    public void CreateColonyShip(int shipCount, Vector3 spawnPosition, GameObject[] shipArray)
+    {
+        for(int i = 0; i < shipCount; i++)
+        {
+            // Set total module count
+            int moduleCount = Random.Range(4, 16);
+            Debug.Log(i);
+
+            // Start with creating a base and chaning the name
+            shipArray[i] = Instantiate(colonyBase, transform.position, transform.rotation);
+            shipArray[i].name = "Colony Ship " + i;
+            Vector3 offset = shipArray[i].transform.position;
+            offset.z = offset.z - 2;
+
+            // Changing the base to a front colony mesh module
+            int frontChance = Random.Range(0, 101);
+            if(frontChance > 50.0f)
+            {
+                shipArray[i].GetComponent<MeshFilter>().mesh = colonyShipParts[0];
+            }
+            else
+            {
+                shipArray[i].GetComponent<MeshFilter>().mesh = colonyShipParts[1];
+            }
+
+            bool isLast = false;
+            // Loop through the module count to add modules to the ship
+            for (int j = 0; j < moduleCount; j++)
+            {
+                // Generic probability variable
+                int chance = Random.Range(0, 101);
+
+                if(j >= moduleCount - 1)
+                {
+                    isLast = true;
+                }
+
+                if (isLast)
+                {
+                    Debug.Log("Add an engine");
+                    CreateRear(offset, i, shipArray);
+                }
+
+                // If we are just starting the build, the 2nd section must always be generic
+                if (shipArray[i].transform.childCount <= 0)
+                {
+                    CreateConnector(offset, i, shipArray);
+                    offset.z = offset.z - 2;
+                }
+                else if (chance > 60 && !isLast && IsNumberOdd(j))
+                {
+                    CreateHabitatModule(offset, i, shipArray);
+                    offset.z = offset.z - 2;
+                }
+                else if(IsNumberOdd(j) && chance < 40 && !isLast)
+                {
+                    CreateModule(offset, i, shipArray);
+                    offset.z = offset.z - 2;
+                }
+                else if(!IsNumberOdd(j) && !isLast)
+                {
+                    Debug.Log("Create Connector");
+                    CreateConnector(offset, i, shipArray);
+                    offset.z = offset.z - 2;
+                }
+            }
+        }
+    }
+
+    private void CreateConnector(Vector3 offset, int i, GameObject[] shipArray)
+    {
+        // Add the generic section and update the offset.
+        GameObject temp;
+        temp = Instantiate(colonyBase, offset, transform.rotation, shipArray[i].transform);
+        temp.transform.localScale = new Vector3(temp.transform.localScale.x / 2.5f, temp.transform.localScale.y / 2.5f, temp.transform.localScale.z);
+    }
+
+    private void CreateModule(Vector3 offset, int i, GameObject[] shipArray)
+    {
+        // Creates a standard module
+        GameObject temp;
+        temp = Instantiate(colonyBase, offset, transform.rotation, shipArray[i].transform);
+        temp.transform.localScale = new Vector3(temp.transform.localScale.x, temp.transform.localScale.y, temp.transform.localScale.z);
+    }
+
+    private void CreateHabitatModule(Vector3 offset, int i, GameObject[] shipArray)
+    {
+        // Create a larger habitat module
+        GameObject temp;
+        temp = Instantiate(colonyBase, offset, transform.rotation, shipArray[i].transform);
+        temp.GetComponent<MeshFilter>().mesh = colonyShipParts[2];
+        Vector3 position = temp.transform.position;
+        GameObject temp2; 
+        temp2 = Instantiate(colonyBase, position, transform.rotation, shipArray[i].transform);
+        temp2.GetComponent<MeshFilter>().mesh = colonyShipParts[5];
+        temp2.transform.localScale = temp2.transform.localScale * 2.5f;
+        temp2.AddComponent<RotateScript>();
+        int chance = Random.Range(0, 101);
+        if(chance > 50)
+        {
+            temp2.GetComponent<RotateScript>().direction = Time.deltaTime * 2.5f;
+        }
+        else
+        {
+            temp2.GetComponent<RotateScript>().direction = -Time.deltaTime * 2.5f;
+        }
+
+    }
+
+    private void CreateRear(Vector3 offset, int i, GameObject[] shipArray)
+    {
+        GameObject temp;
+        temp = Instantiate(colonyBase, offset, transform.rotation, shipArray[i].transform);
+        temp.GetComponent<MeshFilter>().mesh = colonyShipParts[6];
+    }
+
+    private bool IsNumberOdd(int number)
+    {
+        if ((number & 1) == 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
         }
     }
 }

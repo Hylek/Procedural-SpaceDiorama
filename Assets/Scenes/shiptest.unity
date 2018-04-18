@@ -113,6 +113,129 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &137687847
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 1830438007720308, guid: 0353d85068a88f146a60020d064a2a2b,
+    type: 2}
+  m_PrefabInternal: {fileID: 243308865}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 137687852}
+  - component: {fileID: 137687851}
+  - component: {fileID: 137687850}
+  - component: {fileID: 137687849}
+  - component: {fileID: 137687848}
+  m_Layer: 0
+  m_Name: _MANAGER
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &137687848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 114601069072223134, guid: 0353d85068a88f146a60020d064a2a2b,
+    type: 2}
+  m_PrefabInternal: {fileID: 243308865}
+  m_GameObject: {fileID: 137687847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb8053780f53bb842a6128b26aa72c17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fighterBase: {fileID: 1721020425799806, guid: 67e007ae5b3a3d346bd4d6e8f89bc0fd,
+    type: 2}
+  colonyBase: {fileID: 1222688878806582, guid: 7ce7f36bb11aa4049b3ec43d8a99e8a3, type: 2}
+  shipArray: []
+  fighterParts:
+  - {fileID: 4300004, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
+  - {fileID: 4300000, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
+  - {fileID: 4300002, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
+  - {fileID: 4300006, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
+  - {fileID: 4300008, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
+  - {fileID: 4300010, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
+  - {fileID: 4300014, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
+  - {fileID: 4300012, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
+  colonyShipParts:
+  - {fileID: 4300004, guid: 923b3696277fe9246b000385c016052a, type: 3}
+  - {fileID: 4300006, guid: 923b3696277fe9246b000385c016052a, type: 3}
+  - {fileID: 4300008, guid: 923b3696277fe9246b000385c016052a, type: 3}
+  - {fileID: 4300002, guid: 923b3696277fe9246b000385c016052a, type: 3}
+  - {fileID: 4300008, guid: 923b3696277fe9246b000385c016052a, type: 3}
+  - {fileID: 4300000, guid: 923b3696277fe9246b000385c016052a, type: 3}
+  - {fileID: 4300010, guid: 923b3696277fe9246b000385c016052a, type: 3}
+  - {fileID: 4300012, guid: 923b3696277fe9246b000385c016052a, type: 3}
+  - {fileID: 4300014, guid: 923b3696277fe9246b000385c016052a, type: 3}
+  - {fileID: 4300016, guid: 923b3696277fe9246b000385c016052a, type: 3}
+  colonyShipsTest: []
+  fighterMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+--- !u!135 &137687849
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 135422009768896496, guid: 0353d85068a88f146a60020d064a2a2b,
+    type: 2}
+  m_PrefabInternal: {fileID: 243308865}
+  m_GameObject: {fileID: 137687847}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Radius: 500
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &137687850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 114503045641971674, guid: 0353d85068a88f146a60020d064a2a2b,
+    type: 2}
+  m_PrefabInternal: {fileID: 243308865}
+  m_GameObject: {fileID: 137687847}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 018e4734f3d1aa947b4b62dac0315291, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  galaxyPrefab: {fileID: 1047696289245826, guid: 466b236d978522c4b8c3e9858c104562,
+    type: 2}
+  galaxyStars: []
+  spherePrefab: {fileID: 1570263449846110, guid: 0b2e9cf4ef5dbc242a070fe2eadc2403,
+    type: 2}
+  star: {fileID: 0}
+  planetPrefab: {fileID: 1601925230114730, guid: 63952ceb7cdfab642907a36e16ba95ae,
+    type: 2}
+  planets: []
+  starMaterial: {fileID: 2100000, guid: 7ea8447b115406347951851f6f302b27, type: 2}
+  planetCount: 0
+--- !u!114 &137687851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 114027039448957550, guid: 0353d85068a88f146a60020d064a2a2b,
+    type: 2}
+  m_PrefabInternal: {fileID: 243308865}
+  m_GameObject: {fileID: 137687847}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 686dc4dbab198064cb53ef4108e5eaf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  starMaterial: {fileID: 0}
+  defaultMat: {fileID: 0}
+  planetMat: {fileID: 0}
+--- !u!4 &137687852
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 4728134387706824, guid: 0353d85068a88f146a60020d064a2a2b,
+    type: 2}
+  m_PrefabInternal: {fileID: 243308865}
+  m_GameObject: {fileID: 137687847}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &187487911
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,6 +309,92 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 187487911}
   m_Mesh: {fileID: 4300016, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
+--- !u!1001 &243308865
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 114601069072223134, guid: 0353d85068a88f146a60020d064a2a2b,
+        type: 2}
+      propertyPath: colonyGO.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 114601069072223134, guid: 0353d85068a88f146a60020d064a2a2b,
+        type: 2}
+      propertyPath: colonyShipParts.Array.size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4728134387706824, guid: 0353d85068a88f146a60020d064a2a2b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4728134387706824, guid: 0353d85068a88f146a60020d064a2a2b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4728134387706824, guid: 0353d85068a88f146a60020d064a2a2b, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4728134387706824, guid: 0353d85068a88f146a60020d064a2a2b, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4728134387706824, guid: 0353d85068a88f146a60020d064a2a2b, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4728134387706824, guid: 0353d85068a88f146a60020d064a2a2b, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4728134387706824, guid: 0353d85068a88f146a60020d064a2a2b, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4728134387706824, guid: 0353d85068a88f146a60020d064a2a2b, type: 2}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1830438007720308, guid: 0353d85068a88f146a60020d064a2a2b, type: 2}
+      propertyPath: m_Name
+      value: _MANAGER
+      objectReference: {fileID: 0}
+    - target: {fileID: 114503045641971674, guid: 0353d85068a88f146a60020d064a2a2b,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 135422009768896496, guid: 0353d85068a88f146a60020d064a2a2b,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114601069072223134, guid: 0353d85068a88f146a60020d064a2a2b,
+        type: 2}
+      propertyPath: colonyGO.Array.data[0]
+      value: 
+      objectReference: {fileID: 100002, guid: 923b3696277fe9246b000385c016052a, type: 3}
+    - target: {fileID: 114601069072223134, guid: 0353d85068a88f146a60020d064a2a2b,
+        type: 2}
+      propertyPath: colonyBase
+      value: 
+      objectReference: {fileID: 1222688878806582, guid: 7ce7f36bb11aa4049b3ec43d8a99e8a3,
+        type: 2}
+    - target: {fileID: 4728134387706824, guid: 0353d85068a88f146a60020d064a2a2b, type: 2}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114601069072223134, guid: 0353d85068a88f146a60020d064a2a2b,
+        type: 2}
+      propertyPath: colonyShipParts.Array.data[9]
+      value: 
+      objectReference: {fileID: 4300016, guid: 923b3696277fe9246b000385c016052a, type: 3}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 0353d85068a88f146a60020d064a2a2b, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &840298587
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,58 +681,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1584999571}
   m_Mesh: {fileID: 4300012, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
---- !u!1 &1661574886
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1661574888}
-  - component: {fileID: 1661574887}
-  m_Layer: 0
-  m_Name: _MANAGER
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1661574887
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1661574886}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb8053780f53bb842a6128b26aa72c17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fighterBase: {fileID: 1721020425799806, guid: 67e007ae5b3a3d346bd4d6e8f89bc0fd,
-    type: 2}
-  fighterParts:
-  - {fileID: 4300004, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
-  - {fileID: 4300000, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
-  - {fileID: 4300002, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
-  - {fileID: 4300006, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
-  - {fileID: 4300008, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
-  - {fileID: 4300010, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
-  - {fileID: 4300014, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
-  - {fileID: 4300012, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
-  fighterMaterial: {fileID: 0}
---- !u!4 &1661574888
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1661574886}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &1785741091
 GameObject:
   m_ObjectHideFlags: 0
@@ -598,13 +755,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1785741091}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.053731795, y: 0.5689194, z: -0.037288964, w: 0.81978846}
+  m_LocalPosition: {x: -19.81, y: 5.02, z: -7.36}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 7.5, y: 69.52, z: 0}
 --- !u!1 &1791409740
 GameObject:
   m_ObjectHideFlags: 0
