@@ -1,0 +1,43 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ShipScript : MonoBehaviour
+{
+    public SolarSystemScript system;
+    private GameObject target;
+    private Transform orientation;
+    private Vector3 startPos;
+    private float maxForce = 0.25f;
+    private float maxSpeed = 0.15f;
+    private Vector3 velocity = Vector3.zero;
+
+	void Start ()
+    {
+        startPos = transform.position;
+        system = GameObject.Find("_MANAGER").GetComponent<SolarSystemScript>();
+        target = system.planets[Random.Range(0, system.planets.Length)];
+	}
+	
+	void Update ()
+    {
+        float step = 1.5f * Time.deltaTime;
+        //transform.position = Vector3.MoveTowards(transform.position, target.transform.position, step);
+        transform.LookAt(target.transform.position);
+
+        float distance = Vector3.Distance(transform.position, target.transform.position);
+        if(distance < 1.5f)
+        {
+            Destroy(gameObject);
+        }
+
+        // Vector3.MoveTowards(transform.position, target.transform.position, step);
+
+        Vector3 desired = (target.transform.position - transform.position).normalized * maxForce;
+        Vector3 direction = desired - velocity;
+        direction = Vector3.ClampMagnitude(direction, maxForce);
+        direction = direction / GetComponent<Rigidbody>().mass;
+        velocity = Vector3.ClampMagnitude(velocity + direction, maxSpeed);
+        transform.position = transform.position + velocity;
+    }
+}

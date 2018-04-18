@@ -19,6 +19,7 @@ public class SolarSystemScript : MonoBehaviour
     public GameObject[] planets;
     public Material starMaterial;
     public int planetCount;
+    private bool starterPlanet = false;
 
     System.DateTime seedEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc);
 
@@ -29,7 +30,6 @@ public class SolarSystemScript : MonoBehaviour
         CreatePlanets();
         ModifyPlanets();
         GenerateDistantGalaxies();
-
     }
 
     private void CreateStar()
@@ -88,8 +88,8 @@ public class SolarSystemScript : MonoBehaviour
             planets[i].GetComponent<Orbit>().target = star;
             planets[i].name = "Planet " + i;
 
-            minDistance += Random.Range(15.0f, 25.0f);
-            maxDistance += Random.Range(20.0f, 30.0f);
+            minDistance += Random.Range(5.0f, 25.0f);
+            maxDistance += Random.Range(10.0f, 35.0f);
 
             // Use epochtime to generate a seed, meaning each one is guarenteed to be different, rather than Random.range
             //planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 2, 2, 1, 1, 1, 1, true);
@@ -118,7 +118,8 @@ public class SolarSystemScript : MonoBehaviour
                 int chance = Random.Range(1, 101);
                 if (chance > 40.0f)
                 {
-                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0, 1.1f), Random.Range(0, 6), Random.Range(0, 1.1f), Random.Range(0, 1.1f), Random.Range(0, 6), Random.Range(0, 1.1f), true);
+                    //planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0, 1.1f), Random.Range(0, 6), Random.Range(0, 1.1f), Random.Range(0, 1.1f), Random.Range(0, 6), Random.Range(0, 1.1f), true);
+                    Destroy(planets[i].transform.GetChild(0).gameObject);
                     planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0.45f, 0.35f, 0.35f), new Color(0.65f, 0.55f, 0.55f), 2, 3, 2, 2, Random.Range(0, 1.1f));
                 }
                 else
@@ -130,11 +131,17 @@ public class SolarSystemScript : MonoBehaviour
             }
 
             // Golden zone planets
-            if (distance > 50 && distance <= 200)
+            if (distance > 50 && distance <= 150)
             {
                 int chance = Random.Range(1, 101);
                 if(chance > 15.0f)
                 {
+                    if(!starterPlanet)
+                    {
+                        planets[i].AddComponent<TemperateController>();
+                        starterPlanet = true;
+                    }
+
                     float newScale = Random.Range(0.5f, 2.5f);
                     planets[i].transform.localScale = new Vector3(newScale, newScale, newScale);
 
@@ -148,12 +155,12 @@ public class SolarSystemScript : MonoBehaviour
                     planets[i].transform.localScale = new Vector3(newScale, newScale, newScale);
 
                     // Planets closest should have little to no atmosphere and more barren colours
-                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 3, 6, 0.3f, 2, 3, 2, true);
+                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0, 4), Random.Range(0, 4), Random.Range(0, 1.4f), Random.Range(0, 3.2f), Random.Range(0, 4), Random.Range(0, 2.4f), true);
                     planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(Random.Range(0, 1.1f), Random.Range(0, 1.1f), Random.Range(0, 1.1f), 1), new Color(Random.Range(0, 1.1f), Random.Range(0, 1.1f), Random.Range(0, 1.1f), 1), Random.Range(3, 7), Random.Range(1, 7), Random.Range(1, 8), Random.Range(1, 9), Random.Range(0.1f, 0.85f));
                 }
 
             }
-            if(distance > 201)
+            if(distance > 150)
             {
                 float newScale = Random.Range(3.5f, 8.5f);
                 planets[i].transform.localScale = new Vector3(newScale, newScale, newScale);
