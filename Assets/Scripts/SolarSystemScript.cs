@@ -45,14 +45,14 @@ public class SolarSystemScript : MonoBehaviour
             starMaterial.color = new Color32((byte)Random.Range(10, 150), (byte)Random.Range(150, 255), (byte)Random.Range(150, 255), 255);
             starMaterial.EnableKeyword("_EMISSION");
             starMaterial.SetColor("_EmissionColor", starMaterial.color);
-            planetCount = Random.Range(3, 9);
+            planetCount = Random.Range(6, 9);
         } else if (scaleAmount > 10.0f)
         {
             Debug.Log("Big Star!");
             starMaterial.color = new Color32((byte)Random.Range(150, 255), (byte)Random.Range(50, 200), (byte)Random.Range(25, 100), 255);
             starMaterial.EnableKeyword("_EMISSION");
             starMaterial.SetColor("_EmissionColor", starMaterial.color);
-            planetCount = Random.Range(5, 16);
+            planetCount = Random.Range(10, 16);
         }
         planets = new GameObject[planetCount];
 
