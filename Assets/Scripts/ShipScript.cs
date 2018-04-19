@@ -6,9 +6,10 @@ public class ShipScript : MonoBehaviour
 {
     public SolarSystemScript system;
     private GameObject target;
+    private List<GameObject> temperatePlanets;
     private Transform orientation;
     private Vector3 startPos;
-    private float maxForce = 0.25f;
+    private float maxForce = 0.15f;
     private float maxSpeed = 0.15f;
     private Vector3 velocity = Vector3.zero;
     private Vector3 offset = new Vector3(-90, 0, 90);
@@ -18,7 +19,13 @@ public class ShipScript : MonoBehaviour
         startPos = transform.position;
         system = GameObject.Find("_MANAGER").GetComponent<SolarSystemScript>();
         target = system.planets[Random.Range(0, system.planets.Length)];
-	}
+
+        foreach (GameObject go in GameObject.FindObjectsOfType(typeof(GameObject)))
+        {
+            if (go.name == "Temperate")
+                temperatePlanets.Add(go);
+        }
+    }
 	
 	void Update ()
     {

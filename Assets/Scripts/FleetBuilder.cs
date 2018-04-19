@@ -120,6 +120,7 @@ public class FleetBuilder : MonoBehaviour
             // Start with creating a base and chaning the name
             shipArray[i] = Instantiate(colonyBase, transform.position, transform.rotation);
             shipArray[i].name = "Colony Ship " + i;
+            //shipArray[i].AddComponent<ShipScript>();
             Vector3 offset = shipArray[i].transform.position;
             offset.z = offset.z - 2;
 
@@ -175,6 +176,8 @@ public class FleetBuilder : MonoBehaviour
                     offset.z = offset.z - 2;
                 }
             }
+            // Scale down the ship because I stupidly made the models too big :(
+            shipArray[i].transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         }
     }
 

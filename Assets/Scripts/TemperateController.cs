@@ -6,6 +6,7 @@ public class TemperateController : MonoBehaviour
 {
     public FleetBuilder shipBuilder;
     GameObject[] fighterArray;
+    GameObject[] colonyArray;
     public int fighterCount = 1;
     bool isSpawning = false;
     public float minTime = 3.0f;
@@ -15,6 +16,7 @@ public class TemperateController : MonoBehaviour
     {
         shipBuilder = GameObject.Find("_MANAGER").GetComponent<FleetBuilder>();
         fighterArray = new GameObject[fighterCount];
+        colonyArray = new GameObject[1];
 	}
 	
 	void Update ()
@@ -31,6 +33,7 @@ public class TemperateController : MonoBehaviour
         yield return new WaitForSeconds(seconds);
         shipBuilder.CreateFighter(fighterCount, transform.position, fighterArray);
         shipBuilder.CreateFighter(fighterCount, transform.position, fighterArray);
+        shipBuilder.CreateColonyShip(1, transform.position, colonyArray);
         isSpawning = false;
     }
 }
