@@ -6,9 +6,11 @@ public class FleetBuilder : MonoBehaviour
 {
     public GameObject fighterBase;
     public GameObject colonyBase;
+    public GameObject fleetController;
 
     // Fleet arrays
     public GameObject[] shipArray;
+    public List<GameObject> fleets;
 
     public Mesh[] fighterParts;
     public Mesh[] colonyShipParts;
@@ -16,11 +18,35 @@ public class FleetBuilder : MonoBehaviour
     public GameObject[] colonyShipsTest;
 
     public Material fighterMaterial;
+    public int fleetIndex = -1; 
 
     private void Start()
     {
+        fleetIndex = -1;
         colonyShipsTest = new GameObject[1];
-        CreateColonyShip(1, transform.position, colonyShipsTest);
+        //CreateColonyShip(1, transform.position, colonyShipsTest);
+        SpawnFleet();
+    }
+
+    public void SpawnFleet()
+    {
+        int shipCount = Random.Range(10, 21);
+        shipArray = new GameObject[shipCount];
+        fleets.Add(Instantiate(fleetController, transform.position, transform.rotation));
+        fleetIndex++;
+
+        for (int i = 0; i < shipCount; i++)
+        {
+            Vector3 spawnPoint = Random.insideUnitSphere * fleets[fleetIndex].GetComponent<SphereCollider>().radius;
+            if(IsNumberOdd(i))
+            {
+                CreateFighter(1, spawnPoint, shipArray);
+            }
+            else if(!IsNumberOdd(i))
+            {
+                CreateColonyShip(1, spawnPoint, shipArray);
+            }
+        }
     }
 
     public void CreateFighter(int fighterCount, Vector3 spawnPosition, GameObject[] shipArray)
@@ -39,8 +65,11 @@ public class FleetBuilder : MonoBehaviour
             Debug.Log("Tail: " + tailChance);
 
             // Create fighter base
-            shipArray[i] = Instantiate(fighterBase, spawnPosition, transform.rotation);
+            shipArray[i] = Instantiate(fighterBase, spawnPosition, transform.rotation, fleets[fleetIndex].transform);
             shipArray[i].AddComponent<ShipScript>();
+            shipArray[i].GetComponent<Rigidbody>().isKinematic = true;
+
+            //shipArray[i].AddComponent<ShipScript>();
             shipArray[i].name = "Fighter " + i;
 
             // Decide tail, engine and weapon count
@@ -118,7 +147,10 @@ public class FleetBuilder : MonoBehaviour
             Debug.Log(i);
 
             // Start with creating a base and chaning the name
-            shipArray[i] = Instantiate(colonyBase, transform.position, transform.rotation);
+            shipArray[i] = Instantiate(colonyBase, spawnPosition, transform.rotation, fleets[fleetIndex].transform);
+            shipArray[i].AddComponent<Rigidbody>();
+            shipArray[i].GetComponent<Rigidbody>().useGravity = false;
+            shipArray[i].GetComponent<Rigidbody>().isKinematic = true;
             shipArray[i].name = "Colony Ship " + i;
             //shipArray[i].AddComponent<ShipScript>();
             Vector3 offset = shipArray[i].transform.position;

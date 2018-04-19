@@ -29,27 +29,27 @@ public class ShipScript : MonoBehaviour
 	
 	void Update ()
     {
-        float step = 1.5f * Time.deltaTime;
+        //float step = 1.5f * Time.deltaTime;
 
         // Look at the target destination
-        transform.LookAt(target.transform.position);
+        //transform.LookAt(target.transform.position);
 
         // Counteract the wrong rotations due to blender being wank
-        transform.Rotate(-90, 0, 90);
+        //transform.Rotate(-90, 0, 90);
 
-        float distance = Vector3.Distance(transform.position, target.transform.position);
-        if(distance < 1.5f)
-        {
-            Destroy(gameObject);
-        }
+        //float distance = Vector3.Distance(transform.position, target.transform.position);
+        //if(distance < 1.5f)
+        //{
+        //    Destroy(gameObject);
+        //}
 
-        // Vector3.MoveTowards(transform.position, target.transform.position, step);
+        //// Vector3.MoveTowards(transform.position, target.transform.position, step);
 
-        Vector3 desired = (target.transform.position - transform.position).normalized * maxForce;
-        Vector3 direction = desired - velocity;
-        direction = Vector3.ClampMagnitude(direction, maxForce);
-        direction = direction / GetComponent<Rigidbody>().mass;
-        velocity = Vector3.ClampMagnitude(velocity + direction, maxSpeed);
-        transform.position = transform.position + velocity;
+        //Vector3 desired = (target.transform.position - transform.position).normalized * maxForce;
+        //Vector3 direction = desired - velocity;
+        //direction = Vector3.ClampMagnitude(direction, maxForce);
+        //direction = direction / GetComponent<Rigidbody>().mass;
+        //velocity = Vector3.ClampMagnitude(velocity + direction, maxSpeed);
+        //transform.position = transform.position + velocity;
     }
 }

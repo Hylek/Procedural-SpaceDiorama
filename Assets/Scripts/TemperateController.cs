@@ -5,9 +5,10 @@ using UnityEngine;
 public class TemperateController : MonoBehaviour
 {
     public FleetBuilder shipBuilder;
-    GameObject[] fighterArray;
-    GameObject[] colonyArray;
+    public GameObject[] fighterArray;
+    public GameObject[] colonyArray;
     public int fighterCount = 1;
+    public int colonyCount = 2;
     bool isSpawning = false;
     public float minTime = 3.0f;
     public float maxTime = 10.0f;
@@ -16,7 +17,7 @@ public class TemperateController : MonoBehaviour
     {
         shipBuilder = GameObject.Find("_MANAGER").GetComponent<FleetBuilder>();
         fighterArray = new GameObject[fighterCount];
-        colonyArray = new GameObject[1];
+        colonyArray = new GameObject[colonyCount];
 	}
 	
 	void Update ()
@@ -24,16 +25,16 @@ public class TemperateController : MonoBehaviour
         if (!isSpawning)
         {
             isSpawning = true;
-            StartCoroutine(SpawnFighter(Random.Range(minTime, maxTime)));
+            //StartCoroutine(SpawnFleet(Random.Range(minTime, maxTime)));
         }
     }
 
-    IEnumerator SpawnFighter(float seconds)
+    IEnumerator SpawnFleet(float seconds)
     {
         yield return new WaitForSeconds(seconds);
         shipBuilder.CreateFighter(fighterCount, transform.position, fighterArray);
-        shipBuilder.CreateFighter(fighterCount, transform.position, fighterArray);
-        shipBuilder.CreateColonyShip(1, transform.position, colonyArray);
+
+        shipBuilder.CreateColonyShip(colonyCount, transform.position, colonyArray);
         isSpawning = false;
     }
 }

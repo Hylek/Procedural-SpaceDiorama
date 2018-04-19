@@ -238,7 +238,10 @@ MonoBehaviour:
   fighterBase: {fileID: 1721020425799806, guid: 67e007ae5b3a3d346bd4d6e8f89bc0fd,
     type: 2}
   colonyBase: {fileID: 1222688878806582, guid: 7ce7f36bb11aa4049b3ec43d8a99e8a3, type: 2}
+  fleetController: {fileID: 1465301027355366, guid: c1a86f2c71a3b6a40b7aa6892fe8c912,
+    type: 2}
   shipArray: []
+  fleets: []
   fighterParts:
   - {fileID: 4300004, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
   - {fileID: 4300000, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
@@ -261,6 +264,7 @@ MonoBehaviour:
   - {fileID: 4300016, guid: 923b3696277fe9246b000385c016052a, type: 3}
   colonyShipsTest: []
   fighterMaterial: {fileID: 0}
+  fleetIndex: 0
 --- !u!1 &1388495779
 GameObject:
   m_ObjectHideFlags: 0
