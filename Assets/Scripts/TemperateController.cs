@@ -18,23 +18,7 @@ public class TemperateController : MonoBehaviour
         shipBuilder = GameObject.Find("_MANAGER").GetComponent<FleetBuilder>();
         fighterArray = new GameObject[fighterCount];
         colonyArray = new GameObject[colonyCount];
-	}
-	
-	void Update ()
-    {
-        if (!isSpawning)
-        {
-            isSpawning = true;
-            //StartCoroutine(SpawnFleet(Random.Range(minTime, maxTime)));
-        }
-    }
-
-    IEnumerator SpawnFleet(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-        shipBuilder.CreateFighter(fighterCount, transform.position, fighterArray);
-
-        shipBuilder.CreateColonyShip(colonyCount, transform.position, colonyArray);
-        isSpawning = false;
+        shipBuilder.SpawnFleet(transform.position);
+        shipBuilder.SpawnFleet(transform.position);
     }
 }

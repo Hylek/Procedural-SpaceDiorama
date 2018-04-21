@@ -24,21 +24,20 @@ public class FleetBuilder : MonoBehaviour
     {
         fleetIndex = -1;
         colonyShipsTest = new GameObject[1];
-        //CreateColonyShip(1, transform.position, colonyShipsTest);
-        SpawnFleet();
     }
 
-    public void SpawnFleet()
+    public void SpawnFleet(Vector3 position)
     {
         int shipCount = Random.Range(10, 21);
         shipArray = new GameObject[shipCount];
-        fleets.Add(Instantiate(fleetController, transform.position, transform.rotation));
+        fleets.Add(Instantiate(fleetController, position + new Vector3(10, 0, 10), transform.rotation));
         fleetIndex++;
+        fleets[fleetIndex].name = "FleetController";
 
         for (int i = 0; i < shipCount; i++)
         {
-            Vector3 spawnPoint = Random.insideUnitSphere * fleets[fleetIndex].GetComponent<SphereCollider>().radius;
-            if(IsNumberOdd(i))
+            Vector3 spawnPoint = fleets[fleetIndex].transform.position + Random.insideUnitSphere * fleets[fleetIndex].GetComponent<SphereCollider>().radius;
+            if (IsNumberOdd(i))
             {
                 CreateFighter(1, spawnPoint, shipArray);
             }
@@ -62,12 +61,10 @@ public class FleetBuilder : MonoBehaviour
             // Undercarrige weapon
             int underGun = 0;
 
-            Debug.Log("Tail: " + tailChance);
-
             // Create fighter base
             shipArray[i] = Instantiate(fighterBase, spawnPosition, transform.rotation, fleets[fleetIndex].transform);
-            shipArray[i].AddComponent<ShipScript>();
-            shipArray[i].GetComponent<Rigidbody>().isKinematic = true;
+            shipArray[i].AddComponent<ShipBehaviour>();
+            shipArray[i].AddComponent<RotateCorrector>();
 
             //shipArray[i].AddComponent<ShipScript>();
             shipArray[i].name = "Fighter " + i;
@@ -76,7 +73,6 @@ public class FleetBuilder : MonoBehaviour
             tailChance = Random.Range(0, 101);
             engineType = Random.Range(0, 101);
             weaponCount = Random.Range(0, 8);
-            
 
             // Assign the tail to the correct node, if we have a tail it also means we can support a large undercarried gun (Node gun5) 40% chance
             if(tailChance > 60.0f)
@@ -102,7 +98,7 @@ public class FleetBuilder : MonoBehaviour
             {
                 // Add the big engine to the 1st engine node and destroy the 2nd node as we do not need it, then move the 1st node into the center.
                 shipArray[i].transform.GetChild(2).GetComponent<MeshFilter>().mesh = fighterParts[2];
-                shipArray[i].transform.GetChild(2).transform.position = new Vector3(shipArray[i].transform.GetChild(2).transform.position.x, shipArray[i].transform.GetChild(2).transform.position.y, shipArray[i].transform.GetChild(2).transform.position.z + .6f);
+                shipArray[i].transform.GetChild(2).transform.position = new Vector3(shipArray[i].transform.GetChild(2).transform.position.x, shipArray[i].transform.GetChild(2).transform.position.y - .006f, shipArray[i].transform.GetChild(2).transform.position.z);
                 shipArray[i].transform.GetChild(2).transform.localScale = new Vector3(shipArray[i].transform.GetChild(2).transform.localScale.x, shipArray[i].transform.GetChild(2).transform.localScale.y + 0.6f, shipArray[i].transform.GetChild(2).transform.localScale.z);
 
                 Destroy(shipArray[i].transform.GetChild(3).gameObject);
@@ -150,9 +146,8 @@ public class FleetBuilder : MonoBehaviour
             shipArray[i] = Instantiate(colonyBase, spawnPosition, transform.rotation, fleets[fleetIndex].transform);
             shipArray[i].AddComponent<Rigidbody>();
             shipArray[i].GetComponent<Rigidbody>().useGravity = false;
-            shipArray[i].GetComponent<Rigidbody>().isKinematic = true;
             shipArray[i].name = "Colony Ship " + i;
-            //shipArray[i].AddComponent<ShipScript>();
+            shipArray[i].AddComponent<ShipBehaviour>();
             Vector3 offset = shipArray[i].transform.position;
             offset.z = offset.z - 2;
 
@@ -209,7 +204,7 @@ public class FleetBuilder : MonoBehaviour
                 }
             }
             // Scale down the ship because I stupidly made the models too big :(
-            shipArray[i].transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            shipArray[i].transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
         }
     }
 

@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CloudSpinner : MonoBehaviour {
-
-
+public class RotateCorrector : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -13,6 +11,7 @@ public class CloudSpinner : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        transform.Rotate(0, -Time.deltaTime * 3.5f, 0);
-	}
+        // Counteract the wrong rotations due to blender being not very nice :(
+        transform.Rotate(-90, 0, 90);
+    }
 }

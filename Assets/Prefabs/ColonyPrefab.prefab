@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33225430305723140}
   - component: {fileID: 136436044343228416}
   - component: {fileID: 23308613526488478}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ColonyPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}

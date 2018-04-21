@@ -10,8 +10,10 @@ public class SolarSystemScript : MonoBehaviour
 {
 
     public GameObject galaxyPrefab;
+    public Material astertoidMaterial;
 
     public GameObject[] galaxyStars;
+    public GameObject[] asteroids;
     public GameObject spherePrefab;
 
     public GameObject star;
@@ -116,19 +118,19 @@ public class SolarSystemScript : MonoBehaviour
 
                 // Planets closest should have little to no atmosphere and more barren colours
                 int chance = Random.Range(1, 101);
-                if (chance > 40.0f)
+                if (chance > 10.0f)
                 {
                     //planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0, 1.1f), Random.Range(0, 6), Random.Range(0, 1.1f), Random.Range(0, 1.1f), Random.Range(0, 6), Random.Range(0, 1.1f), true);
                     Destroy(planets[i].transform.GetChild(0).gameObject);
                     planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0.45f, 0.35f, 0.35f), new Color(0.65f, 0.55f, 0.55f), 2, 3, 2, 2, Random.Range(0, 1.1f));
                     planets[i].name = "Barren " + i;
                 }
-                else
+                else if (chance < 10.0f)
                 {
-                    // Destroy the atmosphere
-                    Destroy(planets[i].transform.GetChild(0).gameObject);
-                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0.45f, 0.35f, 0.35f), new Color(0.65f, 0.55f, 0.55f), 2, 3, 2, 2, Random.Range(0, 1.1f));
-                    planets[i].name = "Barren " + i;
+                    // Very small chance a planet this close to the star may be a temperate planet
+                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 3, 6, 0.3f, 1, 1, 1, true, false);
+                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0, 0.25f, 0.55f, 1), new Color(0, 0.85f, 0.1f, 1), Random.Range(1, 3), Random.Range(1, 4), Random.Range(1, 4), Random.Range(1, 5), Random.Range(0.1f, 0.2f));
+                    planets[i].name = "Temperate " + i;
                 }
             }
 
@@ -147,8 +149,7 @@ public class SolarSystemScript : MonoBehaviour
                     float newScale = Random.Range(0.5f, 2.5f);
                     planets[i].transform.localScale = new Vector3(newScale, newScale, newScale);
 
-                    // Planets closest should have little to no atmosphere and more barren colours
-                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 3, 6, 0.3f, 1, 1, 1, true);
+                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 3, 6, 0.3f, 1, 1, 1, true, false);
                     planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0, 0.25f, 0.55f, 1), new Color(0, 0.85f, 0.1f, 1), Random.Range(1, 3), Random.Range(1, 4), Random.Range(1, 4), Random.Range(1, 5), Random.Range(0.1f, 0.2f));
                     planets[i].name = "Temperate " + i;
                 }
@@ -158,30 +159,44 @@ public class SolarSystemScript : MonoBehaviour
                     planets[i].transform.localScale = new Vector3(newScale, newScale, newScale);
 
                     // Planets closest should have little to no atmosphere and more barren colours
-                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0, 4), Random.Range(0, 4), Random.Range(0, 1.4f), Random.Range(0, 3.2f), Random.Range(0, 4), Random.Range(0, 2.4f), true);
-                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(Random.Range(0, 1.1f), Random.Range(0, 1.1f), Random.Range(0, 1.1f), 1), new Color(Random.Range(0, 1.1f), Random.Range(0, 1.1f), Random.Range(0, 1.1f), 1), Random.Range(3, 7), Random.Range(1, 7), Random.Range(1, 8), Random.Range(1, 9), Random.Range(0.1f, 0.85f));
+                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.25f, 3), Random.Range(1, 3), Random.Range(0.25f, 0.4f), 0, 0, 0, false, true);
+                    planets[i].GetComponent<Renderer>().material.color = GenerateGasGiantColour();
                     planets[i].name = "Gas " + i;
                 }
 
             }
-            if(distance > 150)
+            // Planets furthest are always to be Gas giants or barren planets
+            if (distance > 150)
             {
-                float newScale = Random.Range(3.5f, 8.5f);
-                planets[i].transform.localScale = new Vector3(newScale, newScale, newScale);
+                int chance = Random.Range(1, 101);
+          
+                // 60% chance it will be gas
+                if(chance > 40.0f)
+                {
+                    float newScale = Random.Range(4.5f, 10.5f);
+                    planets[i].transform.localScale = new Vector3(newScale, newScale, newScale);
+                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.25f, 4), Random.Range(1, 4), Random.Range(0.25f, 1.4f), 0, 0, 0, false, true);
+                    planets[i].GetComponent<Renderer>().material.color = GenerateGasGiantColour();
+                    planets[i].name = "Gas " + i;
+                    GenerateAsteroidRing(planets[i].transform.position, planets[i]);
+                }
+                // 40% chance it will be barren
+                else if (chance < 40.0f)
+                {
+                    Destroy(planets[i].transform.GetChild(0).gameObject);
+                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0.45f, 0.35f, 0.35f), new Color(0.65f, 0.55f, 0.55f), 2, 3, 2, 2, Random.Range(0, 1.1f));
+                    planets[i].name = "Barren " + i;
+                }
 
-                // Planets closest should have little to no atmosphere and more barren colours
-                planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0, 4), Random.Range(0, 4), Random.Range(0, 1.4f), Random.Range(0, 3.2f), Random.Range(0, 4), Random.Range(0, 2.4f), true);
-                planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(Random.Range(0, 1.1f), Random.Range(0, 1.1f), Random.Range(0, 1.1f), 1), new Color(Random.Range(0, 1.1f), Random.Range(0, 1.1f), Random.Range(0, 1.1f), 1), Random.Range(3, 7), Random.Range(1, 7), Random.Range(1, 8), Random.Range(1, 9), Random.Range(0.1f, 0.85f));
-                planets[i].name = "Gas " + i;
             }
         }
     }
 
-    private void GenerateAsteroidRing()
+    private void GenerateAsteroidRing(Vector3 position, GameObject parent)
     {
-        int starCount = Random.Range(80, 201);
-        galaxyStars = new GameObject[starCount];
-        for (int i = 0; i < starCount; i++)
+        int asteroidCount = Random.Range(80, 201);
+        asteroids = new GameObject[asteroidCount];
+        for (int i = 0; i < asteroidCount; i++)
         {
             // Use a random angle and distance from star to place the planets in the solar system
             float angle = Random.Range(0, 361.0f);
@@ -191,9 +206,12 @@ public class SolarSystemScript : MonoBehaviour
             float x = Mathf.Cos(angle * Mathf.Deg2Rad) * distance;
             float z = Mathf.Sin(angle * Mathf.Deg2Rad) * distance;
 
-            Vector3 finalPosition = transform.position + new Vector3(x, 0, z);
+            Vector3 finalPosition = position + new Vector3(x, 0, z);
 
-            Instantiate(spherePrefab, finalPosition, Quaternion.identity, transform);
+            GameObject temp;
+            temp = Instantiate(spherePrefab, finalPosition, Quaternion.identity, parent.transform);
+            temp.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            temp.GetComponent<Renderer>().material = astertoidMaterial;
         }
     }
 
@@ -213,7 +231,20 @@ public class SolarSystemScript : MonoBehaviour
 
     }
 
-    private Texture2D GenerateAtmosphere(int epoch, float bFrequency, int bOctave, float bPersistence, float pFrequency, int pOctave, float pPersistence, bool useBothNoises)
+    private Color GenerateGasGiantColour()
+    {
+        Color colour;
+
+        float red = Random.Range(0, 1.1f);
+        float green = Random.Range(0, 1.1f);
+        float blue = Random.Range(0, 1.1f);
+
+        colour = new Color(red, green, blue);
+
+        return colour;
+    }
+
+    private Texture2D GenerateAtmosphere(int epoch, float bFrequency, int bOctave, float bPersistence, float pFrequency, int pOctave, float pPersistence, bool useBothNoises, bool gasGiant)
     {
         int textureHeight = 256;
         int textureWidth = 512;
@@ -251,7 +282,15 @@ public class SolarSystemScript : MonoBehaviour
         Color[] pixels = clouds.GetPixels(0, 0, clouds.width, clouds.height, 0);
         for (int i = 0; i < pixels.Length; i++)
         {
-            pixels[i] = new Color(pixels[i].r, pixels[i].g, pixels[i].b, pixels[i].grayscale);
+            if(gasGiant)
+            {
+                float gasCloudColour = Random.Range(0, pixels[i].grayscale);
+                pixels[i] = new Color(0, 0.2f, 0.2f, pixels[i].grayscale);
+            }
+            else
+            {
+                pixels[i] = new Color(pixels[i].r, pixels[i].g, pixels[i].b, pixels[i].grayscale);
+            }
         }
         clouds.SetPixels(0, 0, clouds.width, clouds.height, pixels, 0);
         clouds.Apply();
