@@ -194,6 +194,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   galaxyPrefab: {fileID: 1047696289245826, guid: 466b236d978522c4b8c3e9858c104562,
     type: 2}
+  planePrefab: {fileID: 1302806774696070, guid: 9681a89813d0f3f40bbe53c934f548aa,
+    type: 2}
   astertoidMaterial: {fileID: 2100000, guid: 5d20e405eebfe634db0a3302da4c7aa1, type: 2}
   galaxyStars: []
   asteroids: []

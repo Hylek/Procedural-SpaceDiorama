@@ -10,6 +10,7 @@ public class SolarSystemScript : MonoBehaviour
 {
 
     public GameObject galaxyPrefab;
+    public GameObject planePrefab;
     public Material astertoidMaterial;
 
     public GameObject[] galaxyStars;
@@ -32,6 +33,7 @@ public class SolarSystemScript : MonoBehaviour
         CreatePlanets();
         ModifyPlanets();
         GenerateDistantGalaxies();
+       // GenerateNebulae();
     }
 
     private void CreateStar()
@@ -97,6 +99,46 @@ public class SolarSystemScript : MonoBehaviour
             //planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 2, 2, 1, 1, 1, 1, true);
             //planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i);
         }
+    }
+
+    private void SpawnNebula()
+    {
+
+    }
+
+    private void GenerateNebulae()
+    {
+        int textureHeight = 1024;
+        int textureWidth = 1024;
+        Texture2D nebula = new Texture2D(textureWidth, textureHeight, TextureFormat.ARGB32, false);
+        Noise2D noise;
+        GameObject plane;
+
+        Billow bNoise = new Billow();
+        bNoise.Frequency = 1.5f;
+        bNoise.OctaveCount = 2;
+        bNoise.Persistence = 0.4f;
+        bNoise.Seed = (int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds;
+
+        ModuleBase noiseModule;
+        noiseModule = bNoise;
+
+        noise = new Noise2D(textureWidth, textureHeight, noiseModule);
+        noise.GeneratePlanar(2, 4 + 2, 4, 4 + 1);
+        nebula = noise.GetTexture(LibNoise.Unity.Gradient.Grayscale);
+
+        plane = Instantiate(planePrefab, transform.position + new Vector3(0, 25, 0), transform.rotation);
+
+        // Perform colour change
+        Color[] pixels = nebula.GetPixels(0, 0, nebula.width, nebula.height, 0);
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            pixels[i] = new Color(pixels[i].r, pixels[i].g, pixels[i].b, pixels[i].grayscale);
+        }
+        nebula.SetPixels(0, 0, nebula.width, nebula.height, pixels, 0);
+        nebula.Apply();
+
+        plane.GetComponent<Renderer>().material.mainTexture = nebula;
     }
 
     private void ModifyPlanets()
