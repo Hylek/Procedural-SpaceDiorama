@@ -25,6 +25,8 @@ public class SolarSystemScript : MonoBehaviour
     private bool starterPlanet = false;
 
     System.DateTime seedEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc);
+    int terra = 0;
+    public int temperatePlanetCount = 0;
 
 
     void Start ()
@@ -172,7 +174,8 @@ public class SolarSystemScript : MonoBehaviour
                     // Very small chance a planet this close to the star may be a temperate planet
                     planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 3, 6, 0.3f, 1, 1, 1, true, false);
                     planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0, 0.25f, 0.55f, 1), new Color(0, 0.85f, 0.1f, 1), Random.Range(1, 3), Random.Range(1, 4), Random.Range(1, 4), Random.Range(1, 5), Random.Range(0.1f, 0.2f));
-                    planets[i].name = "Temperate " + i;
+                    planets[i].name = "Temperate";
+                    temperatePlanetCount++;
                 }
             }
 
@@ -193,7 +196,14 @@ public class SolarSystemScript : MonoBehaviour
 
                     planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 3, 6, 0.3f, 1, 1, 1, true, false);
                     planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0, 0.25f, 0.55f, 1), new Color(0, 0.85f, 0.1f, 1), Random.Range(1, 3), Random.Range(1, 4), Random.Range(1, 4), Random.Range(1, 5), Random.Range(0.1f, 0.2f));
-                    planets[i].name = "Temperate " + i;
+                    planets[i].name = "Temperate";
+                    temperatePlanetCount++;
+
+                    if (terra == 0 && chance > 30.0f)
+                    {
+                        planets[i].name = "Terra";
+                        terra = 1;
+                    }
                 }
                 else // a Gas giant
                 {
@@ -204,6 +214,12 @@ public class SolarSystemScript : MonoBehaviour
                     planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.25f, 3), Random.Range(1, 3), Random.Range(0.25f, 0.4f), 0, 0, 0, false, true);
                     planets[i].GetComponent<Renderer>().material.color = GenerateGasGiantColour();
                     planets[i].name = "Gas " + i;
+                    int ringChance = Random.Range(1, 101);
+
+                    if (ringChance > 50.0f)
+                    {
+                        GenerateAsteroidRing(planets[i].transform.position, planets[i]);
+                    }
                 }
 
             }
@@ -220,7 +236,12 @@ public class SolarSystemScript : MonoBehaviour
                     planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.25f, 4), Random.Range(1, 4), Random.Range(0.25f, 1.4f), 0, 0, 0, false, true);
                     planets[i].GetComponent<Renderer>().material.color = GenerateGasGiantColour();
                     planets[i].name = "Gas " + i;
-                    GenerateAsteroidRing(planets[i].transform.position, planets[i]);
+                    int ringChance = Random.Range(1, 101);
+
+                    if(ringChance > 50.0f)
+                    {
+                        GenerateAsteroidRing(planets[i].transform.position, planets[i]);
+                    }
                 }
                 // 40% chance it will be barren
                 else if (chance < 40.0f)
