@@ -35,7 +35,7 @@ public class FleetController : MonoBehaviour
                 targetPlanets.Add(planet);
             }
         }
-        target = targetPlanets[Random.Range(0, targetPlanets.Count + 1)];
+        target = targetPlanets[Random.Range(0, targetPlanets.Count)];
     }
 
     private void Update()

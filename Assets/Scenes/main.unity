@@ -207,6 +207,7 @@ MonoBehaviour:
   planets: []
   starMaterial: {fileID: 2100000, guid: 7ea8447b115406347951851f6f302b27, type: 2}
   planetCount: 0
+  temperatePlanetCount: 0
 --- !u!4 &1275077319
 Transform:
   m_ObjectHideFlags: 0
@@ -351,7 +352,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1388495779}
   m_LocalRotation: {x: 0.2164396, y: 0, z: 0, w: 0.97629607}
-  m_LocalPosition: {x: 0, y: 156, z: -247}
+  m_LocalPosition: {x: 0, y: 150, z: -200}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
