@@ -20,6 +20,6 @@ public class Orbit : MonoBehaviour
     {
         // Rotate the object around the central object
         transform.RotateAround(targetPosition.position, orbitAngle, orbitSpeed * Time.deltaTime);
-        transform.Rotate(0, Time.deltaTime * 2.5f, 0);
+        transform.Rotate(0, Time.deltaTime * 1.5f, 0);
     }
 }

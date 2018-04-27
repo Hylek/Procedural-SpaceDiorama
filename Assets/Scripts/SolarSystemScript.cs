@@ -35,7 +35,6 @@ public class SolarSystemScript : MonoBehaviour
         CreatePlanets();
         ModifyPlanets();
         GenerateDistantGalaxies();
-       // GenerateNebulae();
     }
 
     private void CreateStar()
@@ -67,6 +66,8 @@ public class SolarSystemScript : MonoBehaviour
         star.GetComponent<Renderer>().material = starMaterial;
         star.name = "star";
         star.transform.localScale = scale;
+
+        // Create a light for the star to project light around the diorama
         star.AddComponent<Light>();
         star.GetComponent<Light>().type = LightType.Point;
         star.GetComponent<Light>().range = scaleAmount * starStrength * 2;
@@ -96,51 +97,7 @@ public class SolarSystemScript : MonoBehaviour
 
             minDistance += Random.Range(5.0f, 25.0f);
             maxDistance += Random.Range(10.0f, 35.0f);
-
-            // Use epochtime to generate a seed, meaning each one is guarenteed to be different, rather than Random.range
-            //planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 2, 2, 1, 1, 1, 1, true);
-            //planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i);
         }
-    }
-
-    private void SpawnNebula()
-    {
-
-    }
-
-    private void GenerateNebulae()
-    {
-        int textureHeight = 1024;
-        int textureWidth = 1024;
-        Texture2D nebula = new Texture2D(textureWidth, textureHeight, TextureFormat.ARGB32, false);
-        Noise2D noise;
-        GameObject plane;
-
-        Billow bNoise = new Billow();
-        bNoise.Frequency = 1.5f;
-        bNoise.OctaveCount = 2;
-        bNoise.Persistence = 0.4f;
-        bNoise.Seed = (int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds;
-
-        ModuleBase noiseModule;
-        noiseModule = bNoise;
-
-        noise = new Noise2D(textureWidth, textureHeight, noiseModule);
-        noise.GeneratePlanar(2, 4 + 2, 4, 4 + 1);
-        nebula = noise.GetTexture(LibNoise.Unity.Gradient.Grayscale);
-
-        plane = Instantiate(planePrefab, transform.position + new Vector3(0, 25, 0), transform.rotation);
-
-        // Perform colour change
-        Color[] pixels = nebula.GetPixels(0, 0, nebula.width, nebula.height, 0);
-        for (int i = 0; i < pixels.Length; i++)
-        {
-            pixels[i] = new Color(pixels[i].r, pixels[i].g, pixels[i].b, pixels[i].grayscale);
-        }
-        nebula.SetPixels(0, 0, nebula.width, nebula.height, pixels, 0);
-        nebula.Apply();
-
-        plane.GetComponent<Renderer>().material.mainTexture = nebula;
     }
 
     private void ModifyPlanets()
@@ -149,7 +106,7 @@ public class SolarSystemScript : MonoBehaviour
         for (int i = 0; i < planetCount; i++)
         {
             distance = Vector3.Distance(planets[i].transform.position, star.transform.position);
-            planets[i].GetComponent<Orbit>().orbitSpeed = (1f / distance) * 50.0f;
+            planets[i].GetComponent<Orbit>().orbitSpeed = (1f / distance) * 10.0f;
 
             Debug.Log("Planet " + i + " Distance from star " + distance);
 
@@ -164,16 +121,19 @@ public class SolarSystemScript : MonoBehaviour
                 int chance = Random.Range(1, 101);
                 if (chance > 10.0f)
                 {
-                    //planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0, 1.1f), Random.Range(0, 6), Random.Range(0, 1.1f), Random.Range(0, 1.1f), Random.Range(0, 6), Random.Range(0, 1.1f), true);
                     Destroy(planets[i].transform.GetChild(0).gameObject);
-                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0.45f, 0.35f, 0.35f), new Color(0.65f, 0.55f, 0.55f), 2, 3, 2, 2, Random.Range(0, 1.1f));
+
+                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateBarrenSurface((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.4f, 0.8f), Random.Range(1.5f, 3.6f), Random.Range(6, 7));
+                    planets[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", 0f);
                     planets[i].name = "Barren " + i;
                 }
                 else if (chance < 10.0f)
                 {
                     // Very small chance a planet this close to the star may be a temperate planet
-                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 3, 6, 0.3f, 1, 1, 1, true, false);
-                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0, 0.25f, 0.55f, 1), new Color(0, 0.85f, 0.1f, 1), Random.Range(1, 3), Random.Range(1, 4), Random.Range(1, 4), Random.Range(1, 5), Random.Range(0.1f, 0.2f));
+                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(1, 3), Random.Range(2, 5), Random.Range(0.1f, 0.4f), 1, 1, 1, true, false);
+                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.2f, 1.5f), Random.Range(5, 7), Random.Range(2.5f, 5.6f), Random.Range(0.1f, 0.25f));
+
+                    planets[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", 0f);
                     planets[i].name = "Temperate";
                     temperatePlanetCount++;
                 }
@@ -195,7 +155,8 @@ public class SolarSystemScript : MonoBehaviour
                     planets[i].transform.localScale = new Vector3(newScale, newScale, newScale);
 
                     planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 3, 6, 0.3f, 1, 1, 1, true, false);
-                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0, 0.25f, 0.55f, 1), new Color(0, 0.85f, 0.1f, 1), Random.Range(1, 3), Random.Range(1, 4), Random.Range(1, 4), Random.Range(1, 5), Random.Range(0.1f, 0.2f));
+                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.2f, 1.5f), Random.Range(5, 7), Random.Range(2.5f, 5.6f), Random.Range(0.1f, 0.25f));
+                    planets[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", 0f);
                     planets[i].name = "Temperate";
                     temperatePlanetCount++;
 
@@ -210,10 +171,10 @@ public class SolarSystemScript : MonoBehaviour
                     float newScale = Random.Range(1.5f, 4.5f);
                     planets[i].transform.localScale = new Vector3(newScale, newScale, newScale);
 
-                    // Planets closest should have little to no atmosphere and more barren colours
-                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.25f, 3), Random.Range(1, 3), Random.Range(0.25f, 0.4f), 0, 0, 0, false, true);
-                    planets[i].GetComponent<Renderer>().material.color = GenerateGasGiantColour();
+                    // Gas giants should be generally larger with no terrain texture and a thicc atmosphere of a random colour
+                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.25f, 1), Random.Range(1, 2), Random.Range(0.25f, 0.3f), 0, 0, 0, false, true);
                     planets[i].name = "Gas " + i;
+                    planets[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", 0f);
                     int ringChance = Random.Range(1, 101);
 
                     if (ringChance > 50.0f)
@@ -233,9 +194,9 @@ public class SolarSystemScript : MonoBehaviour
                 {
                     float newScale = Random.Range(4.5f, 10.5f);
                     planets[i].transform.localScale = new Vector3(newScale, newScale, newScale);
-                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.25f, 4), Random.Range(1, 4), Random.Range(0.25f, 1.4f), 0, 0, 0, false, true);
-                    planets[i].GetComponent<Renderer>().material.color = GenerateGasGiantColour();
+                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.25f, 1), Random.Range(1, 2), Random.Range(0.25f, 0.3f), 0, 0, 0, false, true);
                     planets[i].name = "Gas " + i;
+                    planets[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", 0f);
                     int ringChance = Random.Range(1, 101);
 
                     if(ringChance > 50.0f)
@@ -247,7 +208,8 @@ public class SolarSystemScript : MonoBehaviour
                 else if (chance < 40.0f)
                 {
                     Destroy(planets[i].transform.GetChild(0).gameObject);
-                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, new Color(0.45f, 0.35f, 0.35f), new Color(0.65f, 0.55f, 0.55f), 2, 3, 2, 2, Random.Range(0, 1.1f));
+                    planets[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", 0f);
+                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateBarrenSurface((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.4f, 0.8f), Random.Range(1.5f, 3.6f), Random.Range(6, 7));
                     planets[i].name = "Barren " + i;
                 }
 
@@ -257,13 +219,13 @@ public class SolarSystemScript : MonoBehaviour
 
     private void GenerateAsteroidRing(Vector3 position, GameObject parent)
     {
-        int asteroidCount = Random.Range(80, 201);
+        int asteroidCount = Random.Range(40, 101);
         asteroids = new GameObject[asteroidCount];
         for (int i = 0; i < asteroidCount; i++)
         {
             // Use a random angle and distance from star to place the planets in the solar system
             float angle = Random.Range(0, 361.0f);
-            float distance = Random.Range(10.0f, 21.0f);
+            float distance = Random.Range(5.0f, 14.0f);
 
             // Get the position
             float x = Mathf.Cos(angle * Mathf.Deg2Rad) * distance;
@@ -289,22 +251,35 @@ public class SolarSystemScript : MonoBehaviour
         }
     }
 
-    private void PlanetMeshMorpher()
+    private Texture2D GenerateBarrenSurface(int epoch, float frequency, float lacunarity, int octave)
     {
+        int textureHeight = 256;
+        int textureWidth = 512;
+        Texture2D barren = new Texture2D(textureWidth, textureHeight, TextureFormat.ARGB32, false);
 
-    }
+        // Feed in noise values
+        RiggedMultifractal rm = new RiggedMultifractal();
+        rm.Frequency = frequency;
+        rm.Lacunarity = lacunarity;
+        rm.OctaveCount = octave;
+        rm.Seed = epoch;
 
-    private Color GenerateGasGiantColour()
-    {
-        Color colour;
+        ModuleBase noiseModule = rm;
+        Noise2D noise = new Noise2D(textureWidth, textureHeight, noiseModule);
+        noise.GenerateSpherical(-90.0, 90.0, -180.0, 180.0);
+        barren = noise.GetTexture(LibNoise.Unity.Gradient.Grayscale);
 
-        float red = Random.Range(0, 1.1f);
-        float green = Random.Range(0, 1.1f);
-        float blue = Random.Range(0, 1.1f);
+        Color[] pixels = barren.GetPixels(0, 0, barren.width, barren.height, 0);
+        float colourAStrength = Random.Range(0.2f, 1.6f);
+        float colourBStrength = Random.Range(1.1f, 2.1f);
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            pixels[i] = Color.Lerp(new Color(0.14f, 0.12f, 0.11f) * colourAStrength, new Color(0.32f, 0.23f, 0.05f) * colourBStrength, Mathf.Round(pixels[i].grayscale * 1000f) / 1000f);
+        }
+        barren.SetPixels(0, 0, barren.width, barren.height, pixels, 0);
+        barren.Apply();
 
-        colour = new Color(red, green, blue);
-
-        return colour;
+        return barren;
     }
 
     private Texture2D GenerateAtmosphere(int epoch, float bFrequency, int bOctave, float bPersistence, float pFrequency, int pOctave, float pPersistence, bool useBothNoises, bool gasGiant)
@@ -343,12 +318,14 @@ public class SolarSystemScript : MonoBehaviour
 
         // Perform colour change
         Color[] pixels = clouds.GetPixels(0, 0, clouds.width, clouds.height, 0);
+
+        Color colourA = new Color(Random.Range(0, 0.35f), Random.Range(0.2f, 0.8f), Random.Range(0.3f, 1.1f));
+        Color colourB = new Color(Random.Range(0.1f, 0.45f), Random.Range(0.1f, 0.6f), Random.Range(0.2f, 0.7f));
         for (int i = 0; i < pixels.Length; i++)
         {
             if(gasGiant)
             {
-                float gasCloudColour = Random.Range(0, pixels[i].grayscale);
-                pixels[i] = new Color(0, 0.2f, 0.2f, pixels[i].grayscale);
+                pixels[i] = Color.Lerp(colourA, colourB * 2, Mathf.Round(pixels[i].grayscale * 1000f) / 1000f);
             }
             else
             {
@@ -361,7 +338,7 @@ public class SolarSystemScript : MonoBehaviour
         return clouds;
     }
 
-    private Texture2D GenerateTerrain(int epoch, Color colorA, Color colorB, float frequency, int octaves, float lacunarity, float persistence, float grayscaleTarget)
+    private Texture2D GenerateTerrain(int epoch, float frequency, int octaves, float lacunarity, float persistence)
     {
         int textureHeight = 256;
         int textureWidth = 512;
@@ -369,11 +346,11 @@ public class SolarSystemScript : MonoBehaviour
         Noise2D noise;
 
         // Create new LibNoise Perlin Noise to make the atmosphere and set values
-        RiggedMultifractal pNoise = new RiggedMultifractal();
+        Perlin pNoise = new Perlin();
         pNoise.Frequency = frequency;
         pNoise.OctaveCount = octaves;
         pNoise.Lacunarity = lacunarity;
-        //pNoise.Persistence = persistence;
+        pNoise.Persistence = persistence;
         pNoise.Seed = epoch;
 
         ModuleBase noiseModule = pNoise;
@@ -383,18 +360,9 @@ public class SolarSystemScript : MonoBehaviour
 
         // Perform colour change
         Color[] pixels = terrain.GetPixels(0, 0, terrain.width, terrain.height, 0);
-        Color targetGrayscale = new Color(grayscaleTarget, grayscaleTarget, grayscaleTarget);
         for (int i = 0; i < pixels.Length; i++)
         {
-            if(pixels[i].grayscale > targetGrayscale.grayscale)
-            {
-                pixels[i] = colorA; //new Color(0, 0.25f, 0.55f, 1);
-            }
-            else
-            {
-                pixels[i] = colorB; //new Color(0, 0.85f, 0.1f, 1);
-            }
-            //pixels[i] = new Color(pixels[i].r, pixels[i].g, pixels[i].b, pixels[i].grayscale);
+            pixels[i] = Color.Lerp(Color.green * 1.2f, Color.blue, Mathf.Round(pixels[i].grayscale * 1000f) / 1000f);
         }
         terrain.SetPixels(0, 0, terrain.width, terrain.height, pixels, 0);
         terrain.Apply();

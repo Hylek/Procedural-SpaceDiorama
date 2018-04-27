@@ -286,8 +286,6 @@ GameObject:
   - component: {fileID: 1388495781}
   - component: {fileID: 1388495780}
   - component: {fileID: 1388495784}
-  - component: {fileID: 1388495786}
-  - component: {fileID: 1388495785}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -370,41 +368,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   profile: {fileID: 11400000, guid: 6b2ed308961d26543b153a8d1ecdce3a, type: 2}
---- !u!95 &1388495785
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1388495779}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
---- !u!320 &1388495786
-PlayableDirector:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1388495779}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: 3abb9539d64f38a41a8683bb7c6c4779, type: 2}
-  m_InitialState: 1
-  m_WrapMode: 2
-  m_DirectorUpdateMode: 1
-  m_InitialTime: 0
-  m_SceneBindings:
-  - key: {fileID: 114671381969251394, guid: 3abb9539d64f38a41a8683bb7c6c4779, type: 2}
-    value: {fileID: 0}
-  m_ExposedReferences:
-    m_References: []
 --- !u!1 &1805040886
 GameObject:
   m_ObjectHideFlags: 0
