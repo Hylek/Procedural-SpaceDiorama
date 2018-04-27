@@ -12,6 +12,7 @@ public class SolarSystemScript : MonoBehaviour
     public GameObject galaxyPrefab;
     public GameObject planePrefab;
     public Material astertoidMaterial;
+    public Vector3 cameraTarget;
 
     public GameObject[] galaxyStars;
     public GameObject[] asteroids;
@@ -35,6 +36,11 @@ public class SolarSystemScript : MonoBehaviour
         CreatePlanets();
         ModifyPlanets();
         GenerateDistantGalaxies();
+    }
+
+    private void Update()
+    {
+        CameraControls();
     }
 
     private void CreateStar()
@@ -111,7 +117,7 @@ public class SolarSystemScript : MonoBehaviour
             Debug.Log("Planet " + i + " Distance from star " + distance);
 
             // Closest planets
-            if(distance < 50) 
+            if(distance <= 50) 
             {
                 // Planets closest should be smaller
                 float newScale = Random.Range(0.5f, 2.5f);
@@ -185,7 +191,7 @@ public class SolarSystemScript : MonoBehaviour
 
             }
             // Planets furthest are always to be Gas giants or barren planets
-            if (distance > 150)
+            if (distance >= 150)
             {
                 int chance = Random.Range(1, 101);
           
@@ -370,4 +376,15 @@ public class SolarSystemScript : MonoBehaviour
         return terrain;
     }
 
+    private void CameraControls()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            Debug.Log("Set camera target!");
+            int planet = Random.Range(0, planets.Length);
+            Vector3 cameraOffset = new Vector3(planets[planet].transform.position.x, planets[planet].transform.position.y + 2, planets[planet].transform.position.z - 5);
+            cameraTarget = cameraOffset;
+        }
+        GameObject.Find("Main Camera").transform.position = cameraTarget;
+    }
 }
