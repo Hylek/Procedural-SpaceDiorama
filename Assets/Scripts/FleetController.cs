@@ -72,7 +72,7 @@ public class FleetController : MonoBehaviour
             if (Physics.Raycast(transform.position, dMean * vision, out hit, 50.0f))
             {
                 Debug.DrawRay(ships[i].transform.position, (dMean * vision) * hit.distance, Color.red);
-                Debug.Log("Hit: " + hit.transform.name);
+                //Debug.Log("Hit: " + hit.transform.name);
                 isObstacle = true;
             }
             else

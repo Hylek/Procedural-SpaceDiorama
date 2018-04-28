@@ -140,7 +140,7 @@ public class FleetBuilder : MonoBehaviour
         {
             // Set total module count
             int moduleCount = Random.Range(4, 16);
-            Debug.Log(i);
+            //Debug.Log(i);
 
             // Start with creating a base and chaning the name
             shipArray[i] = Instantiate(colonyBase, spawnPosition, transform.rotation, fleets[fleetIndex].transform);
@@ -176,7 +176,7 @@ public class FleetBuilder : MonoBehaviour
 
                 if (isLast)
                 {
-                    Debug.Log("Add an engine");
+                    //Debug.Log("Add an engine");
                     CreateRear(offset, i, shipArray);
                 }
 
@@ -198,7 +198,7 @@ public class FleetBuilder : MonoBehaviour
                 }
                 else if(!IsNumberOdd(j) && !isLast)
                 {
-                    Debug.Log("Create Connector");
+                    //Debug.Log("Create Connector");
                     CreateConnector(offset, i, shipArray);
                     offset.z = offset.z - 2;
                 }
