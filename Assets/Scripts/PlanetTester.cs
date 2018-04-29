@@ -129,7 +129,7 @@ public class PlanetTester : MonoBehaviour
                 {
                     Destroy(planets[i].transform.GetChild(0).gameObject);
 
-                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateBarrenSurface((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.4f, 0.5f), Random.Range(1.5f, 3.6f), Random.Range(6, 7));
+                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateBarrenSurface((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.4f, 0.8f), Random.Range(1.5f, 3.6f), Random.Range(6, 7));
                     planets[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", 0f);
                     planets[i].name = "Barren " + i;
                 }
