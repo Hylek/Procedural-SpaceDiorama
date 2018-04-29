@@ -48,6 +48,21 @@ public class FleetBuilder : MonoBehaviour
         }
     }
 
+    public void TestFleet(Vector3 position)
+    {
+        int shipCount = Random.Range(10, 21);
+        shipArray = new GameObject[shipCount];
+        fleets.Add(Instantiate(fleetController, position + new Vector3(10, 0, 10), transform.rotation));
+        fleetIndex++;
+        fleets[fleetIndex].name = "FleetController";
+
+        for (int i = 0; i < shipCount; i++)
+        {
+            Vector3 spawnPoint = new Vector3(fleets[fleetIndex].transform.position.x + (i / 1.95f), fleets[fleetIndex].transform.position.y, fleets[fleetIndex].transform.position.z);
+            CreateColonyShip(1, spawnPoint, shipArray);
+        }
+    }
+
     public void CreateFighter(int fighterCount, Vector3 spawnPosition, GameObject[] shipArray)
     {
         for(int i = 0; i < fighterCount; i++)

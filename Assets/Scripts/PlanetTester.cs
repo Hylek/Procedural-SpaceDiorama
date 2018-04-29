@@ -55,7 +55,7 @@ public class PlanetTester : MonoBehaviour
             starMaterial.color = new Color32((byte)Random.Range(10, 150), (byte)Random.Range(150, 255), (byte)Random.Range(150, 255), 255);
             starMaterial.EnableKeyword("_EMISSION");
             starMaterial.SetColor("_EmissionColor", starMaterial.color);
-            planetCount = Random.Range(20, 30);
+            planetCount = Random.Range(20, 20);
         }
         else if (scaleAmount > 10.0f)
         {
@@ -63,7 +63,7 @@ public class PlanetTester : MonoBehaviour
             starMaterial.color = new Color32((byte)Random.Range(150, 255), (byte)Random.Range(50, 200), (byte)Random.Range(25, 100), 255);
             starMaterial.EnableKeyword("_EMISSION");
             starMaterial.SetColor("_EmissionColor", starMaterial.color);
-            planetCount = Random.Range(20, 30);
+            planetCount = Random.Range(20, 20);
         }
         planets = new GameObject[planetCount];
 
@@ -97,12 +97,16 @@ public class PlanetTester : MonoBehaviour
             float z = Mathf.Sin(angle * Mathf.Deg2Rad) * distance;
 
             positions[i] = new Vector3(star.transform.position.x + (i * 2), 0, 0);
+            //positions[i] = new Vector3(x, 0, z);
             planets[i] = Instantiate(planetPrefab, positions[i], Quaternion.identity);
             planets[i].GetComponent<Orbit>().target = star;
             planets[i].name = "Planet " + i;
 
             minDistance += Random.Range(1.0f, 2.0f);
             maxDistance += Random.Range(1.0f, 2.0f);
+            //minDistance += Random.Range(5.0f, 10.0f);
+            //maxDistance += Random.Range(10.0f, 15.0f);
+
         }
     }
 
@@ -117,7 +121,7 @@ public class PlanetTester : MonoBehaviour
             //Debug.Log("Planet " + i + " Distance from star " + distance);
 
             // Closest planets
-            if (distance <= 50)
+            if (distance <= 150)
             {
                 // Planets closest should be smaller
                 float newScale = Random.Range(0.5f, 2.5f);
@@ -125,15 +129,15 @@ public class PlanetTester : MonoBehaviour
 
                 // Planets closest should have little to no atmosphere and more barren colours
                 int chance = Random.Range(1, 101);
-                if (chance > 10.0f)
+                if (chance > 0.0f)
                 {
                     Destroy(planets[i].transform.GetChild(0).gameObject);
 
-                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateBarrenSurface((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.4f, 0.8f), Random.Range(1.5f, 3.6f), Random.Range(6, 7));
+                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateBarrenSurface((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.7f, 0.8f), Random.Range(1.5f, 2.0f), 6);
                     planets[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", 0f);
                     planets[i].name = "Barren " + i;
                 }
-                else if (chance < 10.0f)
+                else if (chance < 0.0f)
                 {
                     // Very small chance a planet this close to the star may be a temperate planet
                     planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 3, 6, 0.3f, 1, 1, 1, true, false);
@@ -146,10 +150,10 @@ public class PlanetTester : MonoBehaviour
             }
 
             // Golden zone planets
-            if (distance > 50 && distance <= 150)
+            if /*(distance > 150 &&*/ (distance >= 150)
             {
                 int chance = Random.Range(1, 101);
-                if (chance > 15.0f)
+                if (chance > 1.0f)
                 {
                     if (!starterPlanet)
                     {

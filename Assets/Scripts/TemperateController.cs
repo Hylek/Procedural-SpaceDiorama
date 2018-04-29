@@ -18,7 +18,20 @@ public class TemperateController : MonoBehaviour
         shipBuilder = GameObject.Find("_MANAGER").GetComponent<FleetBuilder>();
         fighterArray = new GameObject[fighterCount];
         colonyArray = new GameObject[colonyCount];
+        Test();
+    }
+
+    // This is used to test the ship building algorithm
+    void Test()
+    {
+        shipBuilder.TestFleet(transform.position);
+    }
+
+    void Spawn()
+    {
         shipBuilder.SpawnFleet(transform.position);
         shipBuilder.SpawnFleet(transform.position);
     }
+
+
 }

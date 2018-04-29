@@ -148,7 +148,10 @@ MonoBehaviour:
   fighterBase: {fileID: 1721020425799806, guid: 67e007ae5b3a3d346bd4d6e8f89bc0fd,
     type: 2}
   colonyBase: {fileID: 1222688878806582, guid: 7ce7f36bb11aa4049b3ec43d8a99e8a3, type: 2}
+  fleetController: {fileID: 1465301027355366, guid: c1a86f2c71a3b6a40b7aa6892fe8c912,
+    type: 2}
   shipArray: []
+  fleets: []
   fighterParts:
   - {fileID: 4300004, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
   - {fileID: 4300000, guid: 1c353533830b14b459dcfd68055ead7c, type: 3}
@@ -171,6 +174,7 @@ MonoBehaviour:
   - {fileID: 4300016, guid: 923b3696277fe9246b000385c016052a, type: 3}
   colonyShipsTest: []
   fighterMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  fleetIndex: -1
 --- !u!135 &137687849
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -198,7 +202,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   galaxyPrefab: {fileID: 1047696289245826, guid: 466b236d978522c4b8c3e9858c104562,
     type: 2}
+  planePrefab: {fileID: 0}
+  astertoidMaterial: {fileID: 0}
+  cameraTarget: {x: 0, y: 0, z: 0}
   galaxyStars: []
+  asteroids: []
   spherePrefab: {fileID: 1570263449846110, guid: 0b2e9cf4ef5dbc242a070fe2eadc2403,
     type: 2}
   star: {fileID: 0}
@@ -207,6 +215,7 @@ MonoBehaviour:
   planets: []
   starMaterial: {fileID: 2100000, guid: 7ea8447b115406347951851f6f302b27, type: 2}
   planetCount: 0
+  temperatePlanetCount: 0
 --- !u!114 &137687851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,14 +223,18 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 243308865}
   m_GameObject: {fileID: 137687847}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 686dc4dbab198064cb53ef4108e5eaf6, type: 3}
+  m_Script: {fileID: 11500000, guid: 86d81b6c9dc1f824b8ed51db8c482d12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  starMaterial: {fileID: 0}
-  defaultMat: {fileID: 0}
-  planetMat: {fileID: 0}
+  shipBuilder: {fileID: 0}
+  fighterArray: []
+  colonyArray: []
+  fighterCount: 1
+  colonyCount: 2
+  minTime: 3
+  maxTime: 10
 --- !u!4 &137687852
 Transform:
   m_ObjectHideFlags: 0
@@ -392,6 +405,17 @@ Prefab:
       propertyPath: colonyShipParts.Array.data[9]
       value: 
       objectReference: {fileID: 4300016, guid: 923b3696277fe9246b000385c016052a, type: 3}
+    - target: {fileID: 114027039448957550, guid: 0353d85068a88f146a60020d064a2a2b,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114601069072223134, guid: 0353d85068a88f146a60020d064a2a2b,
+        type: 2}
+      propertyPath: fleetController
+      value: 
+      objectReference: {fileID: 1465301027355366, guid: c1a86f2c71a3b6a40b7aa6892fe8c912,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0353d85068a88f146a60020d064a2a2b, type: 2}
   m_IsPrefabParent: 0
