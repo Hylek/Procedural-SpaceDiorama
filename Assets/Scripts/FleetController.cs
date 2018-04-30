@@ -6,14 +6,15 @@ public class FleetController : MonoBehaviour
 {
     public GameObject[] ships;
     public List<GameObject> targetPlanets;
+    private Vector3 finalForce;
 
     public SolarSystemScript system;
     private GameObject target;
     private float maxSpeed = 1.1f;
     private Vector3 velocity = Vector3.zero;
 
-    float FAttract_Factor = 18.0f;
-    float FRepel_Factor = 5.0f;
+    float FAttract_Factor = 10.0f;
+    float FRepel_Factor = 0.5f;
     float FAlign_Factor = 40.0f;
     bool isObstacle = false;
 
@@ -46,7 +47,7 @@ public class FleetController : MonoBehaviour
         float maxVision = 10.0f;
 
         for (int i = 0; i < ships.Length; i++)
-        {                   
+        {
             centerOfMass += ships[i].transform.position;
             vMean += ships[i].GetComponent<Rigidbody>().velocity.normalized;
         }
@@ -55,46 +56,52 @@ public class FleetController : MonoBehaviour
 
         for (int i = 0; i < ships.Length; i++)
         {
-            // Attract
-            Vector3 attract = FAttract_Factor * (mMean - ships[i].transform.position);
+            // Attract Force
+            Vector3 attractForce = (mMean - ships[i].transform.position) * FAttract_Factor;
 
-            // Align
-            Vector3 align = FAlign_Factor * (dMean - ships[i].GetComponent<Rigidbody>().velocity);
+            // Align Force
+            Vector3 alignForce = (dMean - ships[i].GetComponent<Rigidbody>().velocity) * FAlign_Factor;
 
-            // Seek
-            Vector3 seek = (target.transform.position - ships[i].transform.position).normalized;
+            // Fix Orientation
+            ships[i].transform.LookAt(ships[i].transform.position + dMean);
 
-            // Avoid
-            Vector3 vVision = ships[i].transform.position + ships[i].GetComponent<Rigidbody>().velocity.normalized * maxVision;
+            // Seek Force
+            Vector3 seekForce = (target.transform.position - ships[i].transform.position).normalized;
+
+            // Avoid Force
+            Vector3 visionFactor = ships[i].transform.position + ships[i].GetComponent<Rigidbody>().velocity.normalized * maxVision;
 
             RaycastHit hit;
-            Vector3 avoid = Vector3.zero;
+            Vector3 avoidForce = Vector3.zero;
             if (Physics.Raycast(transform.position, dMean * vision, out hit, 50.0f))
             {
                 Debug.DrawRay(ships[i].transform.position, (dMean * vision) * hit.distance, Color.red);
-                //Debug.Log("Hit: " + hit.transform.name);
                 isObstacle = true;
             }
             else
             {
-                avoid = Vector3.zero;
+                avoidForce = Vector3.zero;
             }
             Debug.DrawRay(ships[i].transform.position, dMean * vision, Color.white);
 
-            // repel
-            Vector3 repel = Vector3.zero;
+            // Repel Force
+            Vector3 repelForce = Vector3.zero;
             for (int j = 0; j < ships.Length; j++)
             {
-                if (i != j)
-                {
-                    Vector3 delta = ships[j].transform.position - ships[i].transform.position;
-                    repel += delta * (-FRepel_Factor / (Mathf.Pow(delta.magnitude, 2)));
-                }
-            }
-            ships[i].GetComponent<Rigidbody>().AddForce((attract + align + repel + seek) * maxSpeed);
-            ships[i].transform.LookAt(ships[i].transform.position + dMean);
+                if (i == j) continue; // Skip the loop so a ship doesn't calculate forces for itself
 
-            if (Vector3.Distance(ships[i].transform.position, target.transform.position) < 10.0f)
+                Vector3 delta = ships[i].transform.position - ships[j].transform.position;
+                repelForce += (delta / delta.magnitude) * FRepel_Factor;
+            }
+
+            // Add the forces together
+            Vector3 finalForce = attractForce + alignForce + repelForce + seekForce + avoidForce;
+
+            // Apply the forces to the ships' rigidbodies
+            ships[i].GetComponent<Rigidbody>().AddForce(finalForce);
+
+
+            if (Vector3.Distance(ships[i].transform.position, target.transform.position) < 20.0f)
             {
                 Vector3 scale = ships[i].transform.localScale;
                 scale.x -= 0.001f;
@@ -102,6 +109,5 @@ public class FleetController : MonoBehaviour
                 scale.z -= 0.001f;
             }
         }
-
     }
 }
