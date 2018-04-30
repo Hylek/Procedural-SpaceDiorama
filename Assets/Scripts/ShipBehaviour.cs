@@ -7,16 +7,23 @@ public class ShipBehaviour : MonoBehaviour
     float Range_FAttract = 15.0f;
     float Range_FRepel = 20.0f;
     float Range_FAlign = 15.0f;
-    float FAttract_Vmax = 3.0f;
+    float FAttract_Vmax = 2.0f;
     float FAttract_Factor = 2.0f;
-    float FRepel_Factor = 12.0f;
+    float FRepel_Factor = 0.5f;
     float FAlign_Factor = 12.0f;
 
-    Vector3 force = new Vector3(0, 0, 0);
+    public FleetController fleetManager;
+    Vector3 force = Vector3.zero;
 
     void Start()
     {
+        fleetManager = transform.GetComponentInParent<FleetController>();
+    }
 
+    private void Update()
+    {
+        ApplyForces(fleetManager.ships);
+        GetComponent<Rigidbody>().AddForce(force);
     }
 
     private void FixedUpdate()
@@ -34,12 +41,12 @@ public class ShipBehaviour : MonoBehaviour
         //    direction = 100.0f;
         //    GetComponent<Rigidbody>().velocity = (velocity.normalized * direction);
         //}
+
     }
 
     public void ApplyForces(GameObject[] ships)
     {
-       // force = AttractForce(ships) + AlignForce(ships) + RepelForce(ships);
-       // GetComponent<Rigidbody>().AddForce(force);
+       force = RepelForce(ships) /*+ AttractForce(ships) + AlignForce(ships) + SeekForce(ships)*/;
     }
 
     Vector3 AttractForce(GameObject[] ships)
@@ -53,7 +60,6 @@ public class ShipBehaviour : MonoBehaviour
             if (this == ships[i]) continue;
 
             Vector3 sep = transform.position - ships[i].transform.position;
-            Vector3 position = ships[i].transform.position;
 
             float d = sep.magnitude;
 
@@ -98,6 +104,7 @@ public class ShipBehaviour : MonoBehaviour
             direction /= neighbourCount;
             Vector3 desired = direction;
             alignForce += (desired - GetComponent<Rigidbody>().velocity) * FAlign_Factor;
+            transform.LookAt(transform.position + desired);
         }
         return alignForce;
     }
@@ -117,8 +124,8 @@ public class ShipBehaviour : MonoBehaviour
 
             if (d < Range_FRepel)
             {
-                Vector3 delta = transform.position - ships[i].transform.position;
-                repelForce += delta * (-FRepel_Factor / Mathf.Pow(delta.magnitude, 2)); 
+                Vector3 delta = (transform.position - ships[i].transform.position);
+                repelForce += (delta / delta.magnitude); 
                 neighbourCount++;
             }
         }
@@ -127,5 +134,15 @@ public class ShipBehaviour : MonoBehaviour
             repelForce *= FRepel_Factor;
         }
         return repelForce;
+    }
+
+    Vector3 SeekForce(GameObject[] ships)
+    {
+        Vector3 seekForce = Vector3.zero;
+        for (int i = 0; i < ships.Length; i++)
+        {
+            seekForce = (fleetManager.target.transform.position - ships[i].transform.position).normalized;
+        }
+        return seekForce;
     }
 }

@@ -52,6 +52,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4583d495ad8c4f64d82d8b24434bf310, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ships: []
+  targetPlanets: []
+  system: {fileID: 0}
+  target: {fileID: 0}
 --- !u!135 &135435446737521618
 SphereCollider:
   m_ObjectHideFlags: 1
