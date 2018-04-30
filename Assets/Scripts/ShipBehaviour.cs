@@ -8,8 +8,8 @@ public class ShipBehaviour : MonoBehaviour
     float Range_FRepel = 20.0f;
     float Range_FAlign = 15.0f;
     float FAttract_Vmax = 2.0f;
-    float FAttract_Factor = 2.0f;
-    float FRepel_Factor = 0.5f;
+    float FAttract_Factor = 3.0f;
+    float FRepel_Factor = 0.7f;
     float FAlign_Factor = 12.0f;
 
     public FleetController fleetManager;
@@ -22,6 +22,7 @@ public class ShipBehaviour : MonoBehaviour
 
     private void Update()
     {
+        //GetComponent<Rigidbody>().velocity = Vector3.zero;
         ApplyForces(fleetManager.ships);
         GetComponent<Rigidbody>().AddForce(force);
     }
@@ -46,7 +47,7 @@ public class ShipBehaviour : MonoBehaviour
 
     public void ApplyForces(GameObject[] ships)
     {
-       force = RepelForce(ships) /*+ AttractForce(ships) + AlignForce(ships) + SeekForce(ships)*/;
+       force = RepelForce(ships) + AttractForce(ships) + AlignForce(ships) + SeekForce(ships);
     }
 
     Vector3 AttractForce(GameObject[] ships)
@@ -125,13 +126,23 @@ public class ShipBehaviour : MonoBehaviour
             if (d < Range_FRepel)
             {
                 Vector3 delta = (transform.position - ships[i].transform.position);
-                repelForce += (delta / delta.magnitude); 
+                float length = delta.magnitude;
+                if(length == 0)
+                {
+                    continue;
+                }
+
+               // Debug.Log("Delta: " + delta);
+               // Debug.Log("Delta mag: " + length);
+                //repelForce += (delta / Mathf.Pow(delta.magnitude, 2.0f));  
+                repelForce += (delta / delta.magnitude);
+                //repelForce += new Vector3(delta.x / length, delta.y / length, delta.z / length);
                 neighbourCount++;
             }
         }
         if (neighbourCount > 0)
         {
-            repelForce *= FRepel_Factor;
+           repelForce *= FRepel_Factor;
         }
         return repelForce;
     }
@@ -141,7 +152,7 @@ public class ShipBehaviour : MonoBehaviour
         Vector3 seekForce = Vector3.zero;
         for (int i = 0; i < ships.Length; i++)
         {
-            seekForce = (fleetManager.target.transform.position - ships[i].transform.position).normalized;
+            seekForce = (fleetManager.target.transform.position - ships[i].transform.position).normalized * 2.0f;
         }
         return seekForce;
     }
