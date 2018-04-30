@@ -134,9 +134,8 @@ public class ShipBehaviour : MonoBehaviour
 
                // Debug.Log("Delta: " + delta);
                // Debug.Log("Delta mag: " + length);
-                //repelForce += (delta / Mathf.Pow(delta.magnitude, 2.0f));  
-                repelForce += (delta / delta.magnitude);
-                //repelForce += new Vector3(delta.x / length, delta.y / length, delta.z / length);
+                repelForce += (delta / Mathf.Pow(delta.magnitude, 2.0f));  
+                //repelForce += (delta / delta.magnitude);
                 neighbourCount++;
             }
         }
