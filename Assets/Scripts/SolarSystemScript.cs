@@ -56,14 +56,14 @@ public class SolarSystemScript : MonoBehaviour
             starMaterial.color = new Color32((byte)Random.Range(10, 150), (byte)Random.Range(150, 255), (byte)Random.Range(150, 255), 255);
             starMaterial.EnableKeyword("_EMISSION");
             starMaterial.SetColor("_EmissionColor", starMaterial.color);
-            planetCount = Random.Range(6, 9);
+            planetCount = Random.Range(10, 16);
         } else if (scaleAmount > 10.0f)
         {
            // Debug.Log("Big Star!");
             starMaterial.color = new Color32((byte)Random.Range(150, 255), (byte)Random.Range(50, 200), (byte)Random.Range(25, 100), 255);
             starMaterial.EnableKeyword("_EMISSION");
             starMaterial.SetColor("_EmissionColor", starMaterial.color);
-            planetCount = Random.Range(10, 16);
+            planetCount = Random.Range(10, 21);
         }
         planets = new GameObject[planetCount];
 
@@ -183,7 +183,7 @@ public class SolarSystemScript : MonoBehaviour
                     planets[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", 0f);
                     int ringChance = Random.Range(1, 101);
 
-                    if (ringChance > 50.0f)
+                    if (ringChance > 80.0f)
                     {
                         GenerateAsteroidRing(planets[i].transform.position, planets[i]);
                     }
@@ -205,7 +205,7 @@ public class SolarSystemScript : MonoBehaviour
                     planets[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", 0f);
                     int ringChance = Random.Range(1, 101);
 
-                    if(ringChance > 50.0f)
+                    if(ringChance > 80.0f)
                     {
                         GenerateAsteroidRing(planets[i].transform.position, planets[i]);
                     }
@@ -229,11 +229,10 @@ public class SolarSystemScript : MonoBehaviour
         asteroids = new GameObject[asteroidCount];
         for (int i = 0; i < asteroidCount; i++)
         {
-            // Use a random angle and distance from star to place the planets in the solar system
+            // Use a random angle and distance from planet to create asteroid ring
             float angle = Random.Range(0, 361.0f);
-            float distance = Random.Range(5.0f, 14.0f);
+            float distance = Random.Range(8.0f, 10.0f);
 
-            // Get the position
             float x = Mathf.Cos(angle * Mathf.Deg2Rad) * distance;
             float z = Mathf.Sin(angle * Mathf.Deg2Rad) * distance;
 
@@ -263,9 +262,9 @@ public class SolarSystemScript : MonoBehaviour
         int textureWidth = 512;
         Texture2D barren = new Texture2D(textureWidth, textureHeight, TextureFormat.ARGB32, false);
 
-        Debug.Log("Barren frequency: " + frequency);
-        Debug.Log("Barren lacunarity: " + lacunarity);
-        Debug.Log("Barren octave: " + octave);
+        //Debug.Log("Barren frequency: " + frequency);
+        //Debug.Log("Barren lacunarity: " + lacunarity);
+        //Debug.Log("Barren octave: " + octave);
 
         // Feed in noise values
         RiggedMultifractal rm = new RiggedMultifractal();
@@ -279,6 +278,7 @@ public class SolarSystemScript : MonoBehaviour
         noise.GenerateSpherical(-90.0, 90.0, -180.0, 180.0);
         barren = noise.GetTexture(LibNoise.Unity.Gradient.Grayscale);
 
+        // Get the texture's pixels and lerp new colours into them
         Color[] pixels = barren.GetPixels(0, 0, barren.width, barren.height, 0);
         float colourAStrength = Random.Range(0.2f, 1.6f);
         float colourBStrength = Random.Range(1.1f, 2.1f);
@@ -307,19 +307,21 @@ public class SolarSystemScript : MonoBehaviour
         //Debug.Log("Atmosphere Billow lacunarity: " + bPersistence);
         //Debug.Log("Atmosphere Billow octave: " + bOctave);
 
-        // Create new LibNoise Perlin Noise to make the atmosphere and set values
+        // Create new Perlin noise to make the atmosphere and set values
         Perlin pNoise = new Perlin();
         pNoise.Frequency = pFrequency;
         pNoise.OctaveCount = pOctave;
         pNoise.Persistence = pPersistence;
         pNoise.Seed = epoch;
 
+        // Create new Billow noise to make the atmosphere and set values
         Billow bNoise = new Billow();
         bNoise.Frequency = bFrequency;
         bNoise.OctaveCount = bOctave;
         bNoise.Persistence = bPersistence;
         bNoise.Seed = epoch;
 
+        // Combine the noises into the module
         ModuleBase noiseModule;
         if (useBothNoises)
         {
@@ -334,7 +336,7 @@ public class SolarSystemScript : MonoBehaviour
         noise.GenerateSpherical(-90.0, 90.0, -180.0, 180.0);
         clouds = noise.GetTexture(LibNoise.Unity.Gradient.Grayscale);
 
-        // Perform colour change
+        // Perform colour changes
         Color[] pixels = clouds.GetPixels(0, 0, clouds.width, clouds.height, 0);
 
         Color colourA = new Color(Random.Range(0, 0.35f), Random.Range(0.2f, 0.8f), Random.Range(0.3f, 1.1f));
@@ -363,7 +365,7 @@ public class SolarSystemScript : MonoBehaviour
         Texture2D terrain = new Texture2D(textureWidth, textureHeight, TextureFormat.ARGB32, false);
         Noise2D noise;
 
-        // Create new LibNoise Perlin Noise to make the atmosphere and set values
+        // Create new noise to make the surface and set values
         Perlin pNoise = new Perlin();
         pNoise.Frequency = frequency;
         pNoise.OctaveCount = octaves;
@@ -371,12 +373,13 @@ public class SolarSystemScript : MonoBehaviour
         pNoise.Persistence = persistence;
         pNoise.Seed = epoch;
 
+        // Add to module and create sphereical texture
         ModuleBase noiseModule = pNoise;
         noise = new Noise2D(textureWidth, textureHeight, noiseModule);
         noise.GenerateSpherical(-90.0, 90.0, -180.0, 180.0);
         terrain = noise.GetTexture(LibNoise.Unity.Gradient.Grayscale);
 
-        // Perform colour change
+        // Perform colour changes
         Color[] pixels = terrain.GetPixels(0, 0, terrain.width, terrain.height, 0);
         for (int i = 0; i < pixels.Length; i++)
         {

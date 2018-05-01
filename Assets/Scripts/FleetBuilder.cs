@@ -36,7 +36,10 @@ public class FleetBuilder : MonoBehaviour
 
         for (int i = 0; i < shipCount; i++)
         {
+            // Spawn the ships randomly around a sphere
             Vector3 spawnPoint = fleets[fleetIndex].transform.position + Random.insideUnitSphere * fleets[fleetIndex].GetComponent<SphereCollider>().radius;
+
+            // If odd then generate fighter if even generate colony ship
             if (IsNumberOdd(i))
             {
                 CreateFighter(1, spawnPoint, shipArray);
@@ -50,6 +53,7 @@ public class FleetBuilder : MonoBehaviour
 
     public void TestFleet(Vector3 position)
     {
+        // Created for testing
         int shipCount = Random.Range(10, 21);
         shipArray = new GameObject[shipCount];
         fleets.Add(Instantiate(fleetController, position + new Vector3(10, 0, 10), transform.rotation));
@@ -59,7 +63,7 @@ public class FleetBuilder : MonoBehaviour
         for (int i = 0; i < shipCount; i++)
         {
             Vector3 spawnPoint = new Vector3(fleets[fleetIndex].transform.position.x + (i / 1.95f), fleets[fleetIndex].transform.position.y, fleets[fleetIndex].transform.position.z);
-            CreateColonyShip(1, spawnPoint, shipArray);
+            CreateFighter(1, spawnPoint, shipArray);
         }
     }
 

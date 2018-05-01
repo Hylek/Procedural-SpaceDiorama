@@ -96,14 +96,14 @@ public class PlanetTester : MonoBehaviour
             float x = Mathf.Cos(angle * Mathf.Deg2Rad) * distance;
             float z = Mathf.Sin(angle * Mathf.Deg2Rad) * distance;
 
-            positions[i] = new Vector3(star.transform.position.x + (i * 2), 0, 0);
-            //positions[i] = new Vector3(x, 0, z);
+            //positions[i] = new Vector3(star.transform.position.x + (i * 2), 0, 0);
+            positions[i] = new Vector3(x, 0, z);
             planets[i] = Instantiate(planetPrefab, positions[i], Quaternion.identity);
             planets[i].GetComponent<Orbit>().target = star;
             planets[i].name = "Planet " + i;
 
-            minDistance += Random.Range(1.0f, 2.0f);
-            maxDistance += Random.Range(1.0f, 2.0f);
+            minDistance += Random.Range(5.0f, 6.25f);
+            maxDistance += Random.Range(10.0f, 11.25f);
             //minDistance += Random.Range(5.0f, 10.0f);
             //maxDistance += Random.Range(10.0f, 15.0f);
 
