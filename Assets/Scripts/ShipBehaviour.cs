@@ -6,11 +6,11 @@ public class ShipBehaviour : MonoBehaviour
 {
     float Range_FAttract = 15.0f;
     float Range_FRepel = 20.0f;
-    float Range_FAlign = 15.0f;
-    float FAttract_Vmax = 2.0f;
+    float Range_FAlign = 50.0f;
+    float FAttract_Vmax = 1.0f;
     float FAttract_Factor = 3.0f;
-    float FRepel_Factor = 0.7f;
-    float FAlign_Factor = 12.0f;
+    float FRepel_Factor = 0.3f;
+    float FAlign_Factor = 50.0f;
 
     public FleetController fleetManager;
     Vector3 force = Vector3.zero;
@@ -22,27 +22,14 @@ public class ShipBehaviour : MonoBehaviour
 
     private void Update()
     {
-        //GetComponent<Rigidbody>().velocity = Vector3.zero;
         ApplyForces(fleetManager.ships);
         GetComponent<Rigidbody>().AddForce(force);
-    }
 
-    private void FixedUpdate()
-    {
-        //Vector3 velocity = GetComponent<Rigidbody>().velocity;
-        //float direction = velocity.magnitude;
-
-        //if (direction < 10.0f)
-        //{
-        //    direction = 10.0f;
-        //    GetComponent<Rigidbody>().velocity = (velocity.normalized * direction);
-        //}
-        //else if (direction > 100.0f)
-        //{
-        //    direction = 100.0f;
-        //    GetComponent<Rigidbody>().velocity = (velocity.normalized * direction);
-        //}
-
+        if(Vector3.Distance(transform.position, fleetManager.target.transform.position) < 5.0f)
+        {
+            Debug.Log("Fleet has arrived!");
+            Destroy(transform.parent.gameObject);
+        }
     }
 
     public void ApplyForces(GameObject[] ships)
@@ -105,7 +92,9 @@ public class ShipBehaviour : MonoBehaviour
             direction /= neighbourCount;
             Vector3 desired = direction;
             alignForce += (desired - GetComponent<Rigidbody>().velocity) * FAlign_Factor;
-            transform.LookAt(transform.position + desired);
+
+            // Commented code is accurate but causes extreme jittering among ships, used code is much smoother but slightly less accurate in some cases
+            transform.LookAt(/*transform.position + desired.normalized */ fleetManager.target.transform);
         }
         return alignForce;
     }
@@ -131,11 +120,7 @@ public class ShipBehaviour : MonoBehaviour
                 {
                     continue;
                 }
-
-               // Debug.Log("Delta: " + delta);
-               // Debug.Log("Delta mag: " + length);
                 repelForce += (delta / Mathf.Pow(delta.magnitude, 2.0f));  
-                //repelForce += (delta / delta.magnitude);
                 neighbourCount++;
             }
         }

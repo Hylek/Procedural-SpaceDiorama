@@ -30,7 +30,7 @@ public class FleetBuilder : MonoBehaviour
     {
         int shipCount = Random.Range(10, 21);
         shipArray = new GameObject[shipCount];
-        fleets.Add(Instantiate(fleetController, position + new Vector3(10, 0, 10), transform.rotation));
+        fleets.Add(Instantiate(fleetController, position + new Vector3(2, 0, 1), transform.rotation));
         fleetIndex++;
         fleets[fleetIndex].name = "FleetController";
 
@@ -91,14 +91,16 @@ public class FleetBuilder : MonoBehaviour
             // Decide tail, engine and weapon count
             tailChance = Random.Range(0, 101);
             engineType = Random.Range(0, 101);
-            weaponCount = Random.Range(0, 8);
+            weaponCount = Random.Range(2, 8);
+
+            // Add the wings
+            shipArray[i].transform.GetChild(0).GetComponent<MeshFilter>().mesh = fighterParts[6];
+            shipArray[i].transform.GetChild(1).GetComponent<MeshFilter>().mesh = fighterParts[6];
 
             // Assign the tail to the correct node, if we have a tail it also means we can support a large undercarried gun (Node gun5) 40% chance
-            if(tailChance > 60.0f)
+            if (tailChance > 60.0f)
             {
                 shipArray[i].transform.GetChild(5).GetComponent<MeshFilter>().mesh = fighterParts[7];
-                shipArray[i].transform.GetChild(0).GetComponent<MeshFilter>().mesh = fighterParts[6];
-                shipArray[i].transform.GetChild(1).GetComponent<MeshFilter>().mesh = fighterParts[6];
 
                 underGun = Random.Range(1, 101);
             }
@@ -108,7 +110,7 @@ public class FleetBuilder : MonoBehaviour
                 shipArray[i].transform.GetChild(0).GetComponent<MeshFilter>().mesh = fighterParts[6];
                 shipArray[i].transform.GetChild(1).GetComponent<MeshFilter>().mesh = fighterParts[6];
             }
-            if(engineType > 50.0f)
+            if(engineType >= 50.0f)
             {
                 shipArray[i].transform.GetChild(2).GetComponent<MeshFilter>().mesh = fighterParts[1];
                 shipArray[i].transform.GetChild(3).GetComponent<MeshFilter>().mesh = fighterParts[1];
@@ -123,17 +125,22 @@ public class FleetBuilder : MonoBehaviour
                 Destroy(shipArray[i].transform.GetChild(3).gameObject);
             }
             // If we are not considering a undercarrige weapon then add them randomly
-            if(weaponCount < 5)
+            if(weaponCount <= 2)
+            {
+                shipArray[i].transform.GetChild(0).GetChild(0).GetComponent<MeshFilter>().mesh = fighterParts[Random.Range(3, 6)];
+                shipArray[i].transform.GetChild(1).GetChild(0).GetComponent<MeshFilter>().mesh = fighterParts[Random.Range(3, 6)];
+            }
+            if(weaponCount < 5 && weaponCount >= 3)
             {
                 // Add guns for wing 1
                 shipArray[i].transform.GetChild(0).GetChild(0).GetComponent<MeshFilter>().mesh = fighterParts[Random.Range(3, 6)];
-                shipArray[i].transform.GetChild(0).GetChild(1).GetComponent<MeshFilter>().mesh = fighterParts[Random.Range(3, 6)];
+                shipArray[i].transform.GetChild(1).GetChild(0).GetComponent<MeshFilter>().mesh = fighterParts[Random.Range(3, 6)];
 
                 // Add guns for wing 2
-                shipArray[i].transform.GetChild(1).GetChild(0).GetComponent<MeshFilter>().mesh = fighterParts[Random.Range(3, 6)];
+                shipArray[i].transform.GetChild(0).GetChild(1).GetComponent<MeshFilter>().mesh = fighterParts[Random.Range(3, 6)];
                 shipArray[i].transform.GetChild(1).GetChild(1).GetComponent<MeshFilter>().mesh = fighterParts[Random.Range(3, 6)];
             }
-            if(weaponCount > 5)
+            if(weaponCount >= 5)
             {
                 // Add guns for wing 1
                 shipArray[i].transform.GetChild(0).GetChild(0).GetComponent<MeshFilter>().mesh = fighterParts[Random.Range(3, 6)];
@@ -147,7 +154,8 @@ public class FleetBuilder : MonoBehaviour
                 if(underGun > 20.0f && tailChance > 60.0f)
                 {
                     // Add undercarrige weapon
-                    shipArray[i].transform.GetChild(4).GetComponent<MeshFilter>().mesh = fighterParts[Random.Range(3, 5)];
+                    shipArray[i].transform.GetChild(4).GetComponent<MeshFilter>().mesh = fighterParts[Random.Range(3, 6)];
+                    shipArray[i].transform.GetChild(4).transform.localScale = shipArray[i].transform.GetChild(4).transform.localScale * 2;
                 }
             }
         }
@@ -205,7 +213,7 @@ public class FleetBuilder : MonoBehaviour
                     CreateConnector(offset, i, shipArray);
                     offset.z = offset.z - 2;
                 }
-                else if (chance > 60 && !isLast && IsNumberOdd(j))
+                else if (chance >= 40 && !isLast && IsNumberOdd(j))
                 {
                     CreateHabitatModule(offset, i, shipArray);
                     offset.z = offset.z - 2;

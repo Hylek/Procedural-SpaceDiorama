@@ -9,7 +9,6 @@ public class TemperateController : MonoBehaviour
     public GameObject[] colonyArray;
     public int fighterCount = 1;
     public int colonyCount = 2;
-    bool isSpawning = false;
     public float minTime = 3.0f;
     public float maxTime = 10.0f;
 

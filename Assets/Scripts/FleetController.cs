@@ -8,6 +8,9 @@ public class FleetController : MonoBehaviour
     public List<GameObject> targetPlanets;
     public SolarSystemScript system;
     public GameObject target;
+    public Vector3 cameraTarget;
+    int shipCamera = 0;
+    public bool viewShips = false;
 
     private void Start()
     {
@@ -20,6 +23,7 @@ public class FleetController : MonoBehaviour
             ships[i] = transform.GetChild(i).gameObject;
         }
 
+        // Loop through all planets to find Temperate ones for colonisation
         foreach (GameObject planet in GameObject.FindObjectsOfType(typeof(GameObject)))
         {
             if(planet.name == "Temperate")
@@ -28,5 +32,23 @@ public class FleetController : MonoBehaviour
             }
         }
         target = targetPlanets[Random.Range(0, targetPlanets.Count)];
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            shipCamera = Random.Range(0, ships.Length);
+            viewShips = true;
+        }
+        if(viewShips)
+        {
+            GameObject.Find("Main Camera").transform.position = ships[shipCamera].transform.position + new Vector3(0, 0, -0.5f);
+            GameObject.Find("Main Camera").transform.LookAt(ships[shipCamera].transform);
+        }
+        if(Input.GetKeyDown(KeyCode.F))
+        {
+            viewShips = false;
+        }
     }
 }

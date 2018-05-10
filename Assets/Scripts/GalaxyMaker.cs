@@ -6,8 +6,8 @@ public class GalaxyMaker : MonoBehaviour {
 
     public GameObject spherePrefab;
 
-	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
         GenerateSpiralGalaxy();
     }
 	

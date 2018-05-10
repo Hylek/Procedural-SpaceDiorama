@@ -8,7 +8,6 @@ using LibNoise.Unity.Operator;
 
 public class SolarSystemScript : MonoBehaviour
 {
-
     public GameObject galaxyPrefab;
     public GameObject planePrefab;
     public Material astertoidMaterial;
@@ -23,12 +22,11 @@ public class SolarSystemScript : MonoBehaviour
     public GameObject[] planets;
     public Material starMaterial;
     public int planetCount;
-    private bool starterPlanet = false;
+    private int planetView = 0;
+    private bool firstTemperate = false;
 
     System.DateTime seedEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc);
     int terra = 0;
-    public int temperatePlanetCount = 0;
-
 
     void Start ()
     {
@@ -49,7 +47,7 @@ public class SolarSystemScript : MonoBehaviour
         float starStrength = Random.Range(0.1f, 10.0f);
 
         // If the star is small, we use a cooler colour set. If the star is large, we use hotter colours like with red giants
-        // The planets size also affects how many planets it supports
+        // The star size also affects how many planets it supports
         if (scaleAmount < 10.0f)
         {
             //Debug.Log("Small Star!");
@@ -125,7 +123,7 @@ public class SolarSystemScript : MonoBehaviour
 
                 // Planets closest should have little to no atmosphere and more barren colours
                 int chance = Random.Range(1, 101);
-                if (chance > 10.0f)
+                if (chance >= 20.0f)
                 {
                     Destroy(planets[i].transform.GetChild(0).gameObject);
 
@@ -133,43 +131,46 @@ public class SolarSystemScript : MonoBehaviour
                     planets[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", 0f);
                     planets[i].name = "Barren " + i;
                 }
-                else if (chance < 10.0f)
+                else if (chance < 20.0f)
                 {
                     // Very small chance a planet this close to the star may be a temperate planet
-                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(1, 3), Random.Range(2, 5), Random.Range(0.1f, 0.4f), 1, 1, 1, true, false);
-                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.2f, 1.5f), Random.Range(5, 7), Random.Range(2.5f, 5.6f), Random.Range(0.1f, 0.25f));
+                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(2, 3), 6, Random.Range(0.1f, 0.35f), 1, 1, 1, true, false);
+                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.2f, 1.5f), Random.Range(5, 7), Random.Range(2.5f, 4.5f), Random.Range(0.1f, 0.25f), Random.Range(0.2f, 0.45f));
 
                     planets[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", 0f);
                     planets[i].name = "Temperate";
-                    temperatePlanetCount++;
                 }
             }
 
             // Golden zone planets
-            if (distance > 50 && distance <= 150)
+            if (distance > 50 && distance < 150)
             {
                 int chance = Random.Range(1, 101);
-                if(chance > 15.0f)
-                {
-                    if(!starterPlanet)
-                    {
-                        planets[i].AddComponent<TemperateController>();
-                        starterPlanet = true;
-                    }
 
+                if (chance < 15.0f && !firstTemperate)
+                {
+                    chance = 10;
+                    firstTemperate = true;
+                }
+                if(chance >= 15.0f)
+                {
+                    // Guarentee that at least 1 planet is temperate each time
                     float newScale = Random.Range(0.5f, 2.5f);
                     planets[i].transform.localScale = new Vector3(newScale, newScale, newScale);
 
-                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, 3, 6, 0.3f, 1, 1, 1, true, false);
-                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.2f, 1.5f), Random.Range(5, 7), Random.Range(2.5f, 5.6f), Random.Range(0.1f, 0.25f));
+                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(2, 3), 6, Random.Range(0.1f, 0.35f), 1, 1, 1, true, false);
+                    planets[i].GetComponent<Renderer>().material.mainTexture = GenerateTerrain((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.2f, 1.5f), Random.Range(5, 7), Random.Range(2.5f, 5.6f), Random.Range(0.1f, 0.25f), Random.Range(0.2f, 0.45f));
                     planets[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", 0f);
-                    planets[i].name = "Temperate";
-                    temperatePlanetCount++;
-
-                    if (terra == 0 && chance > 30.0f)
+                    if (terra == 0)
                     {
                         planets[i].name = "Terra";
+                        Debug.Log("planet " + i + " Is Terra!");
+                        planets[i].AddComponent<TemperateController>();
                         terra = 1;
+                    }
+                    else
+                    {
+                        planets[i].name = "Temperate";
                     }
                 }
                 else // a Gas giant
@@ -178,7 +179,7 @@ public class SolarSystemScript : MonoBehaviour
                     planets[i].transform.localScale = new Vector3(newScale, newScale, newScale);
 
                     // Gas giants should be generally larger with no terrain texture and a thicc atmosphere of a random colour
-                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.25f, 1), Random.Range(1, 2), Random.Range(0.25f, 0.3f), 0, 0, 0, false, true);
+                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.25f, 1.5f), Random.Range(1, 3), Random.Range(0.25f, 0.35f), 0, 0, 0, false, true);
                     planets[i].name = "Gas " + i;
                     planets[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", 0f);
                     int ringChance = Random.Range(1, 101);
@@ -200,7 +201,7 @@ public class SolarSystemScript : MonoBehaviour
                 {
                     float newScale = Random.Range(4.5f, 10.5f);
                     planets[i].transform.localScale = new Vector3(newScale, newScale, newScale);
-                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.25f, 1), Random.Range(1, 2), Random.Range(0.25f, 0.3f), 0, 0, 0, false, true);
+                    planets[i].transform.GetChild(0).GetComponent<Renderer>().material.mainTexture = GenerateAtmosphere((int)(System.DateTime.UtcNow - seedEpoch).TotalSeconds + i, Random.Range(0.25f, 1.5f), Random.Range(1, 3), Random.Range(0.25f, 0.35f), 0, 0, 0, false, true);
                     planets[i].name = "Gas " + i;
                     planets[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", 0f);
                     int ringChance = Random.Range(1, 101);
@@ -339,8 +340,8 @@ public class SolarSystemScript : MonoBehaviour
         // Perform colour changes
         Color[] pixels = clouds.GetPixels(0, 0, clouds.width, clouds.height, 0);
 
-        Color colourA = new Color(Random.Range(0, 0.35f), Random.Range(0.2f, 0.8f), Random.Range(0.3f, 1.1f));
-        Color colourB = new Color(Random.Range(0.1f, 0.45f), Random.Range(0.1f, 0.6f), Random.Range(0.2f, 0.7f));
+        Color colourA = new Color(Random.Range(0.05f, 0.35f), Random.Range(0.15f, 0.7f), Random.Range(0.3f, 0.8f));
+        Color colourB = new Color(Random.Range(0.1f, 0.45f), Random.Range(0.1f, 0.6f), Random.Range(0.25f, 0.7f));
         for (int i = 0; i < pixels.Length; i++)
         {
             if(gasGiant)
@@ -358,7 +359,7 @@ public class SolarSystemScript : MonoBehaviour
         return clouds;
     }
 
-    private Texture2D GenerateTerrain(int epoch, float frequency, int octaves, float lacunarity, float persistence)
+    private Texture2D GenerateTerrain(int epoch, float frequency, int octaves, float lacunarity, float persistence, float grayscaleTarget)
     {
         int textureHeight = 256;
         int textureWidth = 512;
@@ -380,10 +381,20 @@ public class SolarSystemScript : MonoBehaviour
         terrain = noise.GetTexture(LibNoise.Unity.Gradient.Grayscale);
 
         // Perform colour changes
+        Color targetGrayscale = new Color(grayscaleTarget, grayscaleTarget, grayscaleTarget);
         Color[] pixels = terrain.GetPixels(0, 0, terrain.width, terrain.height, 0);
+        Color colorA = new Color(0, Random.Range(0.25f, 0.35f), Random.Range(0.45f, 0.55f), 1);
+        Color colorB = new Color(0, Random.Range(0.65f, 0.95f), Random.Range(0.1f, 0.2f), 1);
         for (int i = 0; i < pixels.Length; i++)
         {
-            pixels[i] = Color.Lerp(Color.green * 1.2f, Color.blue, Mathf.Round(pixels[i].grayscale * 1000f) / 1000f);
+            if (pixels[i].grayscale > targetGrayscale.grayscale)
+            {
+                pixels[i] = colorA;
+            }
+            else
+            {
+                pixels[i] = colorB;
+            }
         }
         terrain.SetPixels(0, 0, terrain.width, terrain.height, pixels, 0);
         terrain.Apply();
@@ -396,10 +407,16 @@ public class SolarSystemScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F))
         {
             Debug.Log("Set camera target!");
-            int planet = Random.Range(0, planets.Length);
-            Vector3 cameraOffset = new Vector3(planets[planet].transform.position.x, planets[planet].transform.position.y + 2, planets[planet].transform.position.z - 5);
+            Vector3 cameraOffset = new Vector3(planets[planetView].transform.position.x, planets[planetView].transform.position.y, planets[planetView].transform.position.z - (planets[planetView].transform.localScale.x * 3));
             cameraTarget = cameraOffset;
+            planetView += 1;
+            Debug.Log(planetView);
+
+            if (planetView >= planets.Length)
+            {
+                planetView = 0;
+            }
+            GameObject.Find("Main Camera").transform.position = cameraTarget;
         }
-        GameObject.Find("Main Camera").transform.position = cameraTarget;
     }
 }
